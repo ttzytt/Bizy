@@ -31,6 +31,7 @@
     "@fortawesome/react-fontawesome": "^0.1.17",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/google-calendar": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@google/generative-ai": "^0.19.0",

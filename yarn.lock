@@ -1615,6 +1615,11 @@
   resolved "https://registry.npmjs.org/@fullcalendar/daygrid/-/daygrid-6.1.15.tgz"
   integrity sha512-j8tL0HhfiVsdtOCLfzK2J0RtSkiad3BYYemwQKq512cx6btz6ZZ2RNc/hVnIxluuWFyvx5sXZwoeTJsFSFTEFA==
 
+"@fullcalendar/google-calendar@^6.1.15":
+  version "6.1.15"
+  resolved "https://registry.npmjs.org/@fullcalendar/google-calendar/-/google-calendar-6.1.15.tgz"
+  integrity sha512-u1EB/fx24f1GouOwsNo8qIobSrFNi5t2gChumpzR8zbCVUNEx1yOShs7i84WAFuiFHxfiFpuGQ5tvc1aAE1pHg==
+
 "@fullcalendar/interaction@^6.1.15":
   version "6.1.15"
   resolved "https://registry.npmjs.org/@fullcalendar/interaction/-/interaction-6.1.15.tgz"
