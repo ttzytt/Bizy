@@ -64,19 +64,17 @@ const MarketingGenerator = () => {
       
       setGeneratedPost(generatedContent.post);
 
-      // Add suggested events to calendar
+      // Add events to calendar (i dont think this works :skull:)
       const newEvents = generatedContent.events.map(event => ({
         ...event,
         extendedProps: { post: generatedContent.post, status: 'pending' }
       }));
       setEvents(prevEvents => [...prevEvents, ...newEvents]);
       
-      // Add events to calendar
       const calendarApi = calendarRef.current.getApi();
       newEvents.forEach(event => calendarApi.addEvent(event));
     } catch (error) {
       console.error('Error generating post:', error);
-      setGeneratedPost('Failed to generate post. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -91,7 +89,6 @@ const MarketingGenerator = () => {
   const handleEventClick = (info) => {
     const event = info.event;
     if (event.source && event.source.googleCalendarId) {
-      // This is a Google Calendar event
       alert(`Google Calendar Event: ${event.title}\nDate: ${event.start.toDateString()}`);
     } else {
       const status = event.extendedProps.status;
