@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import './VendorManagement.css'; // We'll create this CSS file
 
 const VendorManagement = () => {
   const [vendorName, setVendorName] = useState('');
@@ -9,39 +9,38 @@ const VendorManagement = () => {
   const [vendors, setVendors] = useState([]);
 
   // Function to add a new vendor
-  const addVendor = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/addVendor', {
-        name: vendorName,
-        email: vendorEmail,
-        address: vendorAddress,
-        contract_length: contractLength
-      });
-      setVendors((prevVendors) => [...prevVendors, response.data]);
-      setVendorName('');
-      setVendorEmail('');
-      setVendorAddress('');
-      setContractLength('');
-    } catch (error) {
-      console.error('Error adding vendor:', error);
+  const addVendor = () => {
+    if (!vendorName || !vendorEmail || !vendorAddress || !contractLength) {
+      alert('Please fill in all fields');
+      return;
     }
-  };
 
-  // Function to fetch vendors from the backend
-  const fetchVendors = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/vendors');
-      console.log('Fetched vendors:', response.data); // Ensure the data is correct
-      setVendors(response.data);
-    } catch (error) {
-      console.error('Error fetching vendors:', error);
-    }
-  };
+    const newVendor = {
+      id: Date.now(),
+      name: vendorName,
+      email: vendorEmail,
+      address: vendorAddress,
+      contract_length: contractLength,
+      isNew: true // Flag to trigger animation
+    };
 
-  // Fetch vendors when the component mounts
-  useEffect(() => {
-    fetchVendors();
-  }, []);
+    setVendors((prevVendors) => [...prevVendors, newVendor]);
+
+    // Remove the 'isNew' flag after animation
+    setTimeout(() => {
+      setVendors((prevVendors) =>
+        prevVendors.map((vendor) =>
+          vendor.id === newVendor.id ? { ...vendor, isNew: false } : vendor
+        )
+      );
+    }, 500); // Match this with your CSS animation duration
+
+    // Clear input fields
+    setVendorName('');
+    setVendorEmail('');
+    setVendorAddress('');
+    setContractLength('');
+  };
 
   return (
     <div className="container py-4">
@@ -93,7 +92,7 @@ const VendorManagement = () => {
         <tbody>
           {vendors.length > 0 ? (
             vendors.map((vendor) => (
-              <tr key={vendor.id}>
+              <tr key={vendor.id} className={vendor.isNew ? 'new-vendor' : ''}>
                 <td>{vendor.name}</td>
                 <td>{vendor.email}</td>
                 <td>{vendor.address}</td>
