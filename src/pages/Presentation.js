@@ -97,7 +97,7 @@ export default () => {
                 <Nav.Link as={HashLink} to="#download">Upgrade to Pro</Nav.Link>
               </Nav>
             </Navbar.Collapse>
-            <Button as={HashLink} to="#download" variant="outline-white" className="ms-3"><FontAwesomeIcon icon={faDownload} className="me-1" /> Download</Button>
+            <Button as="a" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" variant="outline-white" className="ms-3"> <FontAwesomeIcon icon={faDownload} className="me-1" /> Download </Button>
           </div>
         </Container>
       </Navbar>
