@@ -1,17 +1,77 @@
-import React, { useState } from 'react';
-import './VendorManagement.css'; // We'll create this CSS file
+import React, { useState, useEffect } from 'react';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import './VendorManagement.css';
+
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0'); // Replace with your actual API key
 
 const VendorManagement = () => {
+  // Vendor State
   const [vendorName, setVendorName] = useState('');
   const [vendorEmail, setVendorEmail] = useState('');
   const [vendorAddress, setVendorAddress] = useState('');
   const [contractLength, setContractLength] = useState('');
   const [vendors, setVendors] = useState([]);
 
-  // Function to add a new vendor
+  const [emailContent, setEmailContent] = useState('');
+  const [isGeneratingEmail, setIsGeneratingEmail] = useState(false);
+
+  // Inventory State
+  const [inventoryItems, setInventoryItems] = useState([]);
+  const [newItem, setNewItem] = useState({
+    name: '',
+    quantity: '',
+    unit: '',
+    batchNumber: '',
+    expiryDate: '',
+    vendorId: '',
+  });
+
+  // Simulated sales data
+  const [salesData, setSalesData] = useState([]);
+
+  useEffect(() => {
+    // Simulate fetching sales data
+    const simulatedSalesData = [
+      { date: '2024-09-01', itemName: 'Tomatoes', quantity: 50 },
+      { date: '2024-09-02', itemName: 'Tomatoes', quantity: 45 },
+      { date: '2024-09-03', itemName: 'Tomatoes', quantity: 55 },
+      // ... more data
+    ];
+    setSalesData(simulatedSalesData);
+  }, []);
+
+  const generateEmail = async (vendorName, itemName, quantity) => {
+    setIsGeneratingEmail(true);
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      
+      const prompt = `
+        Write a professional email to a vendor named ${vendorName} requesting a restock of ${quantity} ${itemName}(s). 
+        The email should:
+        - Be polite and formal
+        - Mention the current low stock situation
+        - Request confirmation of the order and estimated delivery time
+        - Thank them for their continued partnership
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      
+      setEmailContent(text);
+    } catch (error) {
+      console.error('Error generating email:', error);
+      setEmailContent('Failed to generate email. Please try again.');
+    } finally {
+      setIsGeneratingEmail(false);
+    }
+  };
+
+  // Vendor Functions
   const addVendor = () => {
     if (!vendorName || !vendorEmail || !vendorAddress || !contractLength) {
-      alert('Please fill in all fields');
+      alert('Please fill in all vendor fields');
       return;
     }
 
@@ -21,19 +81,9 @@ const VendorManagement = () => {
       email: vendorEmail,
       address: vendorAddress,
       contract_length: contractLength,
-      isNew: true // Flag to trigger animation
     };
 
     setVendors((prevVendors) => [...prevVendors, newVendor]);
-
-    // Remove the 'isNew' flag after animation
-    setTimeout(() => {
-      setVendors((prevVendors) =>
-        prevVendors.map((vendor) =>
-          vendor.id === newVendor.id ? { ...vendor, isNew: false } : vendor
-        )
-      );
-    }, 500); // Match this with your CSS animation duration
 
     // Clear input fields
     setVendorName('');
@@ -42,45 +92,53 @@ const VendorManagement = () => {
     setContractLength('');
   };
 
+  // Inventory Functions
+  const addInventoryItem = () => {
+    if (!newItem.name || !newItem.quantity || !newItem.unit || !newItem.batchNumber || !newItem.expiryDate || !newItem.vendorId) {
+      alert('Please fill in all inventory fields');
+      return;
+    }
+
+    setInventoryItems([...inventoryItems, { ...newItem, id: Date.now() }]);
+    setNewItem({ name: '', quantity: '', unit: '', batchNumber: '', expiryDate: '', vendorId: '' });
+  };
+
+  const checkExpiryAlerts = () => {
+    const today = new Date();
+    const alertThreshold = 7; // Alert for items expiring within 7 days
+    return inventoryItems.filter(item => {
+      const expiryDate = new Date(item.expiryDate);
+      const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+      return daysUntilExpiry <= alertThreshold && daysUntilExpiry > 0;
+    });
+  };
+
+  const forecastInventory = (itemName) => {
+    const itemSales = salesData.filter(sale => sale.itemName === itemName);
+    if (itemSales.length === 0) return "No sales data available";
+
+    const totalSales = itemSales.reduce((sum, sale) => sum + sale.quantity, 0);
+    const averageDailySales = totalSales / itemSales.length;
+    const forecastedNeed = Math.ceil(averageDailySales * 7); // Forecast for a week
+
+    return `Forecasted need for next week: ${forecastedNeed} ${inventoryItems.find(item => item.name === itemName)?.unit || 'units'}`;
+  };
+
   return (
     <div className="container py-4">
-      <h1>Vendor Management</h1>
-      <div className="d-flex flex-column flex-md-row align-items-start mb-4">
-        <input
-          type="text"
-          placeholder="Vendor Name"
-          value={vendorName}
-          onChange={(e) => setVendorName(e.target.value)}
-          className="form-control mb-2 mb-md-0 me-md-2"
-        />
-        <input
-          type="email"
-          placeholder="Vendor Email"
-          value={vendorEmail}
-          onChange={(e) => setVendorEmail(e.target.value)}
-          className="form-control mb-2 mb-md-0 me-md-2"
-        />
-        <input
-          type="text"
-          placeholder="Vendor Address"
-          value={vendorAddress}
-          onChange={(e) => setVendorAddress(e.target.value)}
-          className="form-control mb-2 mb-md-0 me-md-2"
-        />
-        <input
-          type="number"
-          placeholder="Contract Length (months)"
-          value={contractLength}
-          onChange={(e) => setContractLength(e.target.value)}
-          className="form-control mb-2 mb-md-0 me-md-2"
-        />
-        <button onClick={addVendor} className="btn btn-primary">
-          Add Vendor
-        </button>
+      <h1>Vendor and Inventory Management</h1>
+      
+      {/* Vendor Management Section */}
+      <h2>Vendor Management</h2>
+      <div className="input-group mb-4">
+        <input type="text" placeholder="Vendor Name" value={vendorName} onChange={(e) => setVendorName(e.target.value)} />
+        <input type="email" placeholder="Vendor Email" value={vendorEmail} onChange={(e) => setVendorEmail(e.target.value)} />
+        <input type="text" placeholder="Vendor Address" value={vendorAddress} onChange={(e) => setVendorAddress(e.target.value)} />
+        <input type="number" placeholder="Contract Length (months)" value={contractLength} onChange={(e) => setContractLength(e.target.value)} />
+        <button onClick={addVendor}>Add Vendor</button>
       </div>
 
-      <h2>Vendors List</h2>
-      <table className="table table-bordered">
+      <table className="table">
         <thead>
           <tr>
             <th>Name</th>
@@ -90,22 +148,114 @@ const VendorManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {vendors.length > 0 ? (
-            vendors.map((vendor) => (
-              <tr key={vendor.id} className={vendor.isNew ? 'new-vendor' : ''}>
-                <td>{vendor.name}</td>
-                <td>{vendor.email}</td>
-                <td>{vendor.address}</td>
-                <td>{vendor.contract_length}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4">No vendors found</td>
+          {vendors.map((vendor) => (
+            <tr key={vendor.id}>
+              <td>{vendor.name}</td>
+              <td>{vendor.email}</td>
+              <td>{vendor.address}</td>
+              <td>{vendor.contract_length}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
+
+      {/* Inventory Management Section */}
+      <h2>Inventory Management</h2>
+      <div className="input-group mb-4">
+        <input type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} />
+        <input type="number" placeholder="Quantity" value={newItem.quantity} onChange={(e) => setNewItem({...newItem, quantity: e.target.value})} />
+        <input type="text" placeholder="Unit" value={newItem.unit} onChange={(e) => setNewItem({...newItem, unit: e.target.value})} />
+        <input type="text" placeholder="Batch Number" value={newItem.batchNumber} onChange={(e) => setNewItem({...newItem, batchNumber: e.target.value})} />
+        <input type="date" placeholder="Expiry Date" value={newItem.expiryDate} onChange={(e) => setNewItem({...newItem, expiryDate: e.target.value})} />
+        <select value={newItem.vendorId} onChange={(e) => setNewItem({...newItem, vendorId: e.target.value})}>
+          <option value="">Select Vendor</option>
+          {vendors.map(vendor => (
+            <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
+          ))}
+        </select>
+        <button onClick={addInventoryItem}>Add Inventory Item</button>
+      </div>
+
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Batch Number</th>
+            <th>Expiry Date</th>
+            <th>Vendor</th>
+            <th>Forecast</th>
+          </tr>
+        </thead>
+        <tbody>
+          {inventoryItems.map(item => (
+            <tr key={item.id}>
+              <td>{item.name}</td>
+              <td>{item.quantity}</td>
+              <td>{item.unit}</td>
+              <td>{item.batchNumber}</td>
+              <td>{item.expiryDate}</td>
+              <td>{vendors.find(v => v.id === parseInt(item.vendorId))?.name || 'N/A'}</td>
+              <td>{forecastInventory(item.name)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Expiry Alerts */}
+      <h2>Expiry Alerts</h2>
+      <ul className="expiry-alerts">
+        {checkExpiryAlerts().map(item => (
+          <li key={item.id} className="expiry-alert">
+            {item.name} (Batch: {item.batchNumber}) expires on {item.expiryDate}
+          </li>
+        ))}
+      </ul>
+      <h2>Generate Restock Request Email</h2>
+      <div className="input-group mb-4">
+        <select onChange={(e) => {
+          const vendor = vendors.find(v => v.id === parseInt(e.target.value));
+          if (vendor) setVendorName(vendor.name);
+        }}>
+          <option value="">Select Vendor</option>
+          {vendors.map(vendor => (
+            <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
+          ))}
+        </select>
+        <select onChange={(e) => {
+          const item = inventoryItems.find(i => i.id === parseInt(e.target.value));
+          if (item) {
+            setNewItem({...newItem, name: item.name, quantity: item.quantity});
+          }
+        }}>
+          <option value="">Select Item</option>
+          {inventoryItems.map(item => (
+            <option key={item.id} value={item.id}>{item.name}</option>
+          ))}
+        </select>
+        <input 
+          type="number" 
+          placeholder="Restock Quantity" 
+          value={newItem.quantity} 
+          onChange={(e) => setNewItem({...newItem, quantity: e.target.value})}
+        />
+        <button 
+          onClick={() => generateEmail(vendorName, newItem.name, newItem.quantity)}
+          disabled={isGeneratingEmail}
+        >
+          {isGeneratingEmail ? 'Generating...' : 'Generate Email'}
+        </button>
+      </div>
+      <textarea 
+        className="email-content" 
+        value={emailContent} 
+        onChange={(e) => setEmailContent(e.target.value)}
+        rows="10" 
+        placeholder="Generated email will appear here..."
+      />
+
+      {}
     </div>
   );
 };
