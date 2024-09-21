@@ -92,9 +92,6 @@ export default () => {
               <Nav className="navbar-nav-hover align-items-lg-center">
                 <Nav.Link as={HashLink} to="#features">Features</Nav.Link>
                 <Nav.Link as={HashLink} to="#pages">Pages</Nav.Link>
-                <Nav.Link as={HashLink} to="#folder" className="d-sm-none d-xl-inline">Folder Structure</Nav.Link>
-                <Nav.Link as={HashLink} to="#getting-started">Getting Started</Nav.Link>
-                <Nav.Link as={HashLink} to="#download">Upgrade to Pro</Nav.Link>
               </Nav>
             </Navbar.Collapse>
             <Button as={HashLink} to="#download" variant="outline-white" className="ms-3"><FontAwesomeIcon icon={faDownload} className="me-1" /> Download</Button>
