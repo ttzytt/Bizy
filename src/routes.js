@@ -1,3 +1,4 @@
+import VendorManagement from "./pages/VendorManagement";
 
 export const Routes = {
     // pages
@@ -5,6 +6,7 @@ export const Routes = {
     DashboardOverview: { path: "/dashboard/overview" },
     Transactions: { path: "/transactions" },
     Settings: { path: "/settings" },
+    VendorManagement: {path: "/VendorManagement"},
     StoryGenerator: { path: '/StoryGenerator' },
     Upgrade: { path: "/upgrade" },
     BootstrapTables: { path: "/tables/bootstrap-tables" },

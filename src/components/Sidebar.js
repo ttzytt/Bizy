@@ -102,6 +102,7 @@ export default (props = {}) => {
               <NavItem title="Overview" link={Routes.DashboardOverview.path} icon={faChartPie} />
               <NavItem title="Transactions" icon={faHandHoldingUsd} link={Routes.Transactions.path} />
               <NavItem title="Settings" icon={faCog} link={Routes.Settings.path} />
+              <NavItem title="Vendor Management" icon={faCog} link={Routes.VendorManagement.path} />
               <NavItem title="Story Generator" icon={faUser} link={Routes.StoryGenerator.path} />
               <CollapsableNavItem eventKey="tables/" title="Tables" icon={faTable}>
                 <NavItem title="Bootstrap Table" link={Routes.BootstrapTables.path} />
