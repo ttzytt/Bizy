@@ -10,6 +10,7 @@ import GitHubButton from 'react-github-btn';
 
 import { Routes } from "../routes";
 import ThemesbergLogoIcon from "../assets/img/themesberg.svg";
+import PennAppsLogoIcon from "../assets/img/PennApps_Logo.png";
 import ThemesbergLogo from "../assets/img/themesberg-logo.svg";
 import MockupPresentation from "../assets/img/mockup-presentation.png";
 import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
@@ -105,19 +106,19 @@ export default () => {
           <Row>
             <Col xs={12} className="text-center">
               <div className="react-big-icon d-none d-lg-block"><span className="fab fa-react"></span></div>
-              <h1 className="fw-bolder text-secondary">Volt React Dashboard</h1>
-              <p className="text-muted fw-light mb-5 h5">Open source powered by React.js and Bootstrap 5</p>
+              <h1 className="fw-bolder text-secondary">Bizy</h1>
+              <p className="text-muted fw-light mb-5 h5">All in one app for small businesses to achieve success.</p>
               <div className="d-flex align-items-center justify-content-center">
                 <Button variant="secondary" as={Link} to={Routes.DashboardOverview.path} className="text-dark me-3">
-                  Explore dashboard <FontAwesomeIcon icon={faExternalLinkAlt} className="d-none d-sm-inline ms-1" />
+                  Open app <FontAwesomeIcon icon={faExternalLinkAlt} className="d-none d-sm-inline ms-1" />
                 </Button>
-                <GitHubButton className="mt-lg-2" href="https://github.com/themesberg/volt-react-dashboard" data-size="large" data-show-count="true" aria-label="Star themesberg/volt-react-dashboard on GitHub">Star</GitHubButton>
+                <GitHubButton className="mt-lg-2" href="https://github.com/ttzytt/Bizy_frontend" data-size="large" data-show-count="true" aria-label="Star themesberg/volt-react-dashboard on GitHub">Github</GitHubButton>
               </div>
               <div className="d-flex justify-content-center flex-column mb-6 mb-lg-5 mt-5">
                 <div className="text-center">
-                  <a href="https://themesberg.com" target="_blank">
-                    <Image src={ThemesbergLogoIcon} height={25} width={25} className="mb-3" alt="Themesberg Logo" />
-                    <p className="text-muted font-small m-0">A Themesberg production</p>
+                  <a href="https://pennapps.com/" target="_blank">
+                    <Image src={PennAppsLogoIcon} height={25} width={25} className="mb-3" />
+                    <p className="text-muted font-small m-0">A Penn Apps project</p>
                   </a>
                 </div>
               </div>
