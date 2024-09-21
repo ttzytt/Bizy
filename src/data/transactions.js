@@ -3,7 +3,7 @@ import moment from "moment-timezone";
 
 export default [
     {
-        "invoiceNumber": 300000,
+        "invoiceNumber": 400000,
         "status": "Paid",
         "subscription": "Platinum Subscription Plan",
         "price": "799,00",
