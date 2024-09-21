@@ -90,7 +90,6 @@
     white-space: nowrap;
   }
   
-  /* Add responsive design for smaller screens */
   @media (max-width: 768px) {
     .input-group {
       flex-direction: column;

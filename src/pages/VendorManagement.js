@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import './VendorManagement.css';
 
-// Initialize Gemini AI
 const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0'); // Replace with your actual API key
 
 const VendorManagement = () => {
-  // Vendor State
   const [vendorName, setVendorName] = useState('');
   const [vendorEmail, setVendorEmail] = useState('');
   const [vendorAddress, setVendorAddress] = useState('');
@@ -16,7 +14,6 @@ const VendorManagement = () => {
   const [emailContent, setEmailContent] = useState('');
   const [isGeneratingEmail, setIsGeneratingEmail] = useState(false);
 
-  // Inventory State
   const [inventoryItems, setInventoryItems] = useState([]);
   const [newItem, setNewItem] = useState({
     name: '',
@@ -27,16 +24,13 @@ const VendorManagement = () => {
     vendorId: '',
   });
 
-  // Simulated sales data
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching sales data
     const simulatedSalesData = [
       { date: '2024-09-01', itemName: 'Tomatoes', quantity: 50 },
       { date: '2024-09-02', itemName: 'Tomatoes', quantity: 45 },
       { date: '2024-09-03', itemName: 'Tomatoes', quantity: 55 },
-      // ... more data
     ];
     setSalesData(simulatedSalesData);
   }, []);
@@ -68,7 +62,6 @@ const VendorManagement = () => {
     }
   };
 
-  // Vendor Functions
   const addVendor = () => {
     if (!vendorName || !vendorEmail || !vendorAddress || !contractLength) {
       alert('Please fill in all vendor fields');
@@ -85,14 +78,12 @@ const VendorManagement = () => {
 
     setVendors((prevVendors) => [...prevVendors, newVendor]);
 
-    // Clear input fields
     setVendorName('');
     setVendorEmail('');
     setVendorAddress('');
     setContractLength('');
   };
 
-  // Inventory Functions
   const addInventoryItem = () => {
     if (!newItem.name || !newItem.quantity || !newItem.unit || !newItem.batchNumber || !newItem.expiryDate || !newItem.vendorId) {
       alert('Please fill in all inventory fields');
@@ -105,7 +96,7 @@ const VendorManagement = () => {
 
   const checkExpiryAlerts = () => {
     const today = new Date();
-    const alertThreshold = 7; // Alert for items expiring within 7 days
+    const alertThreshold = 7;
     return inventoryItems.filter(item => {
       const expiryDate = new Date(item.expiryDate);
       const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
@@ -119,7 +110,7 @@ const VendorManagement = () => {
 
     const totalSales = itemSales.reduce((sum, sale) => sum + sale.quantity, 0);
     const averageDailySales = totalSales / itemSales.length;
-    const forecastedNeed = Math.ceil(averageDailySales * 7); // Forecast for a week
+    const forecastedNeed = Math.ceil(averageDailySales * 7);
 
     return `Forecasted need for next week: ${forecastedNeed} ${inventoryItems.find(item => item.name === itemName)?.unit || 'units'}`;
   };
@@ -128,7 +119,7 @@ const VendorManagement = () => {
     <div className="container py-4">
       <h1>Vendor and Inventory Management</h1>
       
-      {/* Vendor Management Section */}
+      {}
       <h2>Vendor Management</h2>
       <div className="input-group mb-4">
         <input type="text" placeholder="Vendor Name" value={vendorName} onChange={(e) => setVendorName(e.target.value)} />
@@ -159,7 +150,7 @@ const VendorManagement = () => {
         </tbody>
       </table>
 
-      {/* Inventory Management Section */}
+      {}
       <h2>Inventory Management</h2>
       <div className="input-group mb-4">
         <input type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} />
@@ -203,7 +194,7 @@ const VendorManagement = () => {
         </tbody>
       </table>
 
-      {/* Expiry Alerts */}
+      {}
       <h2>Expiry Alerts</h2>
       <ul className="expiry-alerts">
         {checkExpiryAlerts().map(item => (
