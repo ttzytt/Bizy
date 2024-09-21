@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCashRegister, faChartLine, faCloudUploadAlt, faPlus, faRocket, faTasks, faUserShield } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Button, Dropdown, ButtonGroup, Modal } from '@themesberg/react-bootstrap';
+import { Col, Row, Button, Dropdown, ButtonGroup, Modal, Form } from '@themesberg/react-bootstrap';
 
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
 import { PageVisitsTable } from "../../components/Tables";
@@ -10,6 +10,39 @@ import { trafficShares, totalOrders } from "../../data/charts";
 export default () => {
   // State for managing the modal visibility
   const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null); // State to handle file selection
+  const [uploadStatus, setUploadStatus] = useState('');   // State to handle upload status
+
+  // Handle file selection
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  // Handle file upload
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setUploadStatus('Please select a file first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        setUploadStatus('File uploaded successfully!');
+      } else {
+        setUploadStatus('File upload failed.');
+      }
+    } catch (error) {
+      setUploadStatus('An error occurred while uploading.');
+    }
+  };
 
   return (
     <>
@@ -21,7 +54,16 @@ export default () => {
           <Dropdown.Menu className="dashboard-dropdown dropdown-menu-left mt-2">
             <Dropdown.Item className="fw-bold">
               <FontAwesomeIcon icon={faCloudUploadAlt} className="me-2" /> Upload Files
+              {/* File Input */}
+              <Form.Group controlId="formFile" className="mt-2">
+                <Form.Control type="file" onChange={handleFileChange} />
+              </Form.Group>
+              {/* Upload Button */}
+              <Button onClick={handleUpload} size="sm" className="mt-2">Upload</Button>
+              {/* Upload Status */}
+              {uploadStatus && <p className="mt-2">{uploadStatus}</p>}
             </Dropdown.Item>
+
             <Dropdown.Item
               className="fw-bold"
               onClick={() => setShowModal(true)} // Show modal on click
@@ -76,7 +118,7 @@ export default () => {
 
         <Col xs={12} sm={6} xl={4} className="mb-4">
           <CircleChartWidget
-            title="Traffic Share"
+            title="Customer Split"
             data={trafficShares} />
         </Col>
       </Row>

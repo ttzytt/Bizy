@@ -2,34 +2,43 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import os
 from flask_cors import CORS
+import traceback
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # Set the upload folder
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
 @app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
+def upload():
+    print("Upload function called")
+    try:
+        if 'file' not in request.files:
+            print("No file part in the request")
+            return jsonify({'error': 'No file part'}), 400
 
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+        file = request.files['file']
+        if file.filename == '':
+            print("No selected file")
+            return jsonify({'error': 'No selected file'}), 400
 
-    if file:
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(file_path)
+        if file:
+            print(f"Processing file: {file.filename}")
+            # Your file processing logic here
+            filename = "data1" + os.path.splitext(secure_filename(file.filename))[1]
 
-        # Load the file into a Pandas DataFrame
-        try:
-            df = pd.read_csv(file_path)  # Change to pd.read_excel for Excel files
-            summary = df.describe().to_dict(orient='records')
-            return jsonify({'summary': summary}), 200
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            # Save the file to the upload folder
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
+            return jsonify({'message': 'File uploaded successfully'}), 200
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
