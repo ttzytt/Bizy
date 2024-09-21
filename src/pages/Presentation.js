@@ -112,12 +112,11 @@ export default () => {
                 <Button variant="secondary" as={Link} to={Routes.DashboardOverview.path} className="text-dark me-3">
                   Open app <FontAwesomeIcon icon={faExternalLinkAlt} className="d-none d-sm-inline ms-1" />
                 </Button>
-                <GitHubButton className="mt-lg-2" href="https://github.com/ttzytt/Bizy_frontend" data-size="large" data-show-count="true" aria-label="Star themesberg/volt-react-dashboard on GitHub">Github</GitHubButton>
               </div>
               <div className="d-flex justify-content-center flex-column mb-6 mb-lg-5 mt-5">
                 <div className="text-center">
                   <a href="https://pennapps.com/" target="_blank">
-                    <Image src={PennAppsLogoIcon} height={25} width={25} className="mb-3" />
+                    <Image src={PennAppsLogoIcon} height={50} width={50} className="mb-1" />
                     <p className="text-muted font-small m-0">A Penn Apps project</p>
                   </a>
                 </div>
@@ -143,22 +142,22 @@ export default () => {
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
                 <FontAwesomeIcon icon={faPager} className="text-secondary" />
               </div>
-              <h3 className="fw-bolder">10</h3>
-              <p className="text-gray">Example Pages</p>
+              <h3 className="fw-bolder">5+</h3>
+              <p className="text-gray">Novel Keynote Features</p>
             </Col>
             <Col xs={6} md={3} className="text-center mb-4">
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
                 <FontAwesomeIcon icon={faReact} className="text-secondary" />
               </div>
-              <h3 className="fw-bolder">100+</h3>
-              <p className="text-gray">React Components</p>
+              <h3 className="fw-bolder">Languages</h3>
+              <p className="text-gray">React, Python, TailwindCSS, JS</p>
             </Col>
             <Col xs={6} md={3} className="text-center">
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
                 <FontAwesomeIcon icon={faSass} className="text-secondary" />
               </div>
-              <h3 className="fw-bolder">Workflow</h3>
-              <p className="text-gray">Sass & react-app</p>
+              <h3 className="fw-bolder">[IDK]</h3>
+              <p className="text-gray">lorem10 </p>
             </Col>
             <Col xs={6} md={3} className="text-center">
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
@@ -174,65 +173,12 @@ export default () => {
         <Container>
           <Row className="justify-content-between align-items-center mb-5 mb-lg-7">
             <Col lg={5} className="order-lg-2 mb-5 mb-lg-0">
-              <h2>Powered by React.js</h2>
-              <p className="mb-3 lead fw-bold">The most popular front-end library in the world</p>
-              <p className="mb-4">Volt React is an admin dashboard template that is built using React.js components using react hooks and a data-driven structure that can kick-start your app in no time.</p>
-              <Button as={Link} to={Routes.DashboardOverview.path} variant="secondary" target="_blank">Live Demo <FontAwesomeIcon icon={faExternalLinkAlt} className="ms-1" /></Button>
-              <Button as={HashLink} to="#download" variant="outline-primary" className="ms-3"><FontAwesomeIcon icon={faShoppingCart} className="me-1" /> Download</Button>
+              <h2>Increadibly functional</h2>
+              <p className="mb-3 lead fw-bold"> brief description</p>
+              <p className="mb-4">long description.</p>
             </Col>
             <Col lg={6} className="order-lg-1">
               <Image src={ReactMockupImg} alt="Calendar Preview" />
-            </Col>
-          </Row>
-          <Row className="justify-content-between align-items-center mb-5 mb-lg-7">
-            <Col lg={5}>
-              <h2>React.js Components</h2>
-              <p className="mb-3 lead fw-bold">100+ premium UI elements based on Bootstrap 5</p>
-              <p className="mb-4">We've built over 100 React.js powered components to be used throughout your application saving you time kickstarting your project.</p>
-              <p className="mb-4">Check out the components and use our live React.js component editor to try the code.</p>
-              <Button as={Link} to={Routes.Forms.path} variant="secondary" className="mb-5 mb-lg-0" target="_blank"><FontAwesomeIcon icon={faReact} className="me-1" /> Components examples</Button>
-            </Col>
-            <Col lg={6} className="rounded shadow pt-3">
-              <Code scope={{ Form, Button }} code={`<Form>
-  <Form.Group id="frameworks" className="mb-3">
-    <Form.Label>Example select</Form.Label>
-    <Form.Select>
-      <option defaultValue>Open this select menu</option>
-      <option>One</option>
-      <option>Two</option>
-      <option>Three</option>
-    </Form.Select>
-  </Form.Group>
-  <Button variant="primary" className="m-1">Primary</Button>
-</Form>`} language="jsx" />
-            </Col>
-          </Row>
-          <Row className="justify-content-between align-items-center mb-5 mb-lg-7">
-            <Col lg={5} className="order-lg-2 mb-5 mb-lg-0">
-              <h2 className="d-flex align-items-center">Mapbox <Badge pill bg='secondary' text="dark" className="badge-md ms-3 mb-0 fs-6">Pro</Badge></h2>
-              <p className="mb-3 lead fw-bold">Markers and cards integration with Leaflet.js</p>
-              <p className="mb-4">You can use this map to add markers with custom cards and show them on a map using our custom MapBox integration with Leaflet.js</p>
-              <Button href="https://demo.themesberg.com/volt-pro-react/#/map" className="me-3" variant="secondary" target="_blank"><FontAwesomeIcon icon={faMapMarkedAlt} className="me-2" /> Demo Map</Button>
-              <Button href="https://demo.themesberg.com/volt-pro-react/#/plugins/map" variant="outline-primary" target="_blank"><FontAwesomeIcon icon={faBook} className="me-2" /> Guide</Button>
-            </Col>
-            <Col lg={6} className="order-lg-1">
-              <Image src={MapboxImg} alt="MapBox Leaflet.js Custom Integration Mockup" />
-            </Col>
-          </Row>
-          <Row className="justify-content-between align-items-center mb-5 mb-lg-7">
-            <Col lg={5}>
-              <h2 className="d-flex align-items-center">Calendar <Badge pill bg='secondary' text="dark" className="badge-md ms-3 mb-0 fs-6">Pro</Badge></h2>
-              <p className="mb-3 lead fw-bold">
-                Advanced FullCalendar.js integration
-              </p>
-              <p className="mb-4">
-                We created a fully editable calendar where you can add, edit and delete events for your admin dashboard.
-              </p>
-              <Button href="https://demo.themesberg.com/volt-pro-react/#/calendar" className="me-3" variant="secondary" target="_blank"><FontAwesomeIcon icon={faCalendarAlt} className="me-2" /> Demo Calendar</Button>
-              <Button href="https://demo.themesberg.com/volt-pro-react/#/plugins/calendar" variant="outline-primary" target="_blank"><FontAwesomeIcon icon={faBook} className="me-2" /> Guide</Button>
-            </Col>
-            <Col lg={6}>
-              <Image src={CalendarImg} alt="Calendar Preview" />
             </Col>
           </Row>
           <Row className="justify-content-between align-items-center">
@@ -242,7 +188,7 @@ export default () => {
                 Latest version of Bootstrap 5
               </p>
               <p className="mb-4">
-                Volt React is built using the latest version of Bootstrap 5 and we only used Vanilla Javascript for everything including the plugins
+                Bizy is built using the latest version of Bootstrap 5 and we only used Vanilla Javascript for everything including the plugins
               </p>
             </Col>
             <Col lg={6} className="col-lg-6 order-lg-1">
@@ -256,10 +202,10 @@ export default () => {
           <Row className="justify-content-center mb-5 mb-lg-6">
             <Col xs={12} className="text-center">
               <h2 className="px-lg-5">
-                10 hand-crafted pages
+                Thousands of hand-crafted lines of code
               </h2>
               <p className="lead px-lg-10">
-                Every page from Volt has been carefully built to provide all the necessary pages your startup will require
+                Every feature directly helps small businesses stay a float and grow with ease.
               </p>
             </Col>
           </Row>
