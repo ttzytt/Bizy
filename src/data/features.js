@@ -62,13 +62,13 @@ export default [
         "id": 10,
         "title": "Calendar",
         "icon": faCalendarAlt,
-        "description": "Advanced integration with FullCalendar.js"
+        "description": "Advanced integration with Google Calendar"
     },
     {
         "id": 11,
-        "title": "Mapbox",
+        "title": "OpenStreetMap",
         "icon": faMapMarkedAlt,
-        "description": "Custom integration with markers and cards"
+        "description": "Custom integration with location and filters"
     },
     {
         "id": 12,

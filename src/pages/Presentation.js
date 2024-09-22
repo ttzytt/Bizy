@@ -140,7 +140,7 @@ export default () => {
                 <FontAwesomeIcon icon={faPager} className="text-secondary" />
               </div>
               <h3 className="fw-bolder">5+</h3>
-              <p className="text-gray">Novel Keynote Features</p>
+              <p className="text-gray">Novel Keynote Features utilzing fine-tuned LLMs</p>
             </Col>
             <Col xs={6} md={3} className="text-center mb-4">
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
@@ -153,15 +153,15 @@ export default () => {
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
                 <FontAwesomeIcon icon={faSass} className="text-secondary" />
               </div>
-              <h3 className="fw-bolder">[IDK]</h3>
-              <p className="text-gray">lorem10 </p>
+              <h3 className="fw-bolder">Building</h3>
+              <p className="text-gray">Built by a group of 4, in 36 hours </p>
             </Col>
             <Col xs={6} md={3} className="text-center">
               <div className="icon icon-shape icon-lg bg-white shadow-lg border-light rounded-circle mb-4">
                 <FontAwesomeIcon color="secondary" icon={faBootstrap} className="text-secondary" />
               </div>
-              <h3 className="fw-bolder">Bootstrap 5</h3>
-              <p className="text-gray">CSS Framework</p>
+              <h3 className="fw-bolder">Frameworks</h3>
+              <p className="text-gray">Pandas, Gemini, MongoDB, Overpass, Cors, Flask</p>
             </Col>
           </Row>
         </Container>
@@ -170,9 +170,9 @@ export default () => {
         <Container>
           <Row className="justify-content-between align-items-center mb-5 mb-lg-7">
             <Col lg={5} className="order-lg-2 mb-5 mb-lg-0">
-              <h2>Increadibly functional</h2>
-              <p className="mb-3 lead fw-bold"> brief description</p>
-              <p className="mb-4">long description.</p>
+              <h2>Incredibly Functional</h2>
+              <p className="mb-3 lead fw-bold"> From AI to Database Management</p>
+              <p className="mb-4">Our app contains cashflow and monetary optimization tools using fine-tuned LLMs, namely Google's Gemini. It also includes highly effective vendor and inventory mangement, including reminders and auto-emailers when stock is low. We also provide legal document generators and fillers to save time on filling out paperwork. In addition to this, we also have an Uber-like feature to quickly find employees if any of yours are unavailible. We also have marketing and collaborating tools, partnering you with nearby non-profits, vendors, and shops to maximize productivity. This is just the surface of all Bizy can do. Bizy will keep our business busy.</p>
             </Col>
             <Col lg={6} className="order-lg-1">
               <Image src={ReactMockupImg} alt="Calendar Preview" />
@@ -180,12 +180,12 @@ export default () => {
           </Row>
           <Row className="justify-content-between align-items-center">
             <Col lg={5} className="order-lg-2 mb-5 mb-lg-0">
-              <h2>Bootstrap 5</h2>
+              <h2>Latest Technology</h2>
               <p className="mb-3 lead fw-bold">
-                Latest version of Bootstrap 5
+                We Use the Most Up-to-Date Technology to Keep Your Business Running
               </p>
               <p className="mb-4">
-                Bizy is built using the latest version of Bootstrap 5 and we only used Vanilla Javascript for everything including the plugins
+                Bizy is built using the latest version of React.js and Bootstrap 5 for our front-end development. For styling, we use the highly customizable TailwindCSS and in some places normal CSS. Our code is structured with HTML, and for back-end we use Python with Flask and MongoDB to securely store and host information. In addition to this, we use Google's Gemini to fine-tune our LLMs and provide the best possible experience for our users. We also use various APIs for the other features, including but not limited to Overpass, Pandas, and Cors.
               </p>
             </Col>
             <Col lg={6} className="col-lg-6 order-lg-1">
