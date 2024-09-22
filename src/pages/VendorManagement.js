@@ -289,7 +289,6 @@ const VendorManagement = () => {
             <th>Batch Number</th>
             <th>Expiry Date</th>
             <th>Vendor</th>
-            <th>Forecast</th>
           </tr>
         </thead>
         <tbody>
@@ -300,8 +299,7 @@ const VendorManagement = () => {
               <td>{item.unit}</td>
               <td>{item.batchNumber}</td>
               <td>{item.expiryDate}</td>
-              <td>{vendors.find(v => v._id === parseInt(item.vendorId))?.name || 'N/A'}</td>
-              <td>{forecastInventory(item.name)}</td>
+              <td>{vendors.find(v => v._id === item.vendorId)?.name || 'N/A'}</td>
               <td>
                 <button onClick={() => deleteInventoryItem(item._id)}>Delete</button>
               </td>
