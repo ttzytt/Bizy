@@ -8,10 +8,6 @@ import { CounterWidget, CircleChartWidget, BarChartWidget, RankingWidget, SalesV
 import { trafficShares, totalOrders } from "../../data/charts"; // Ensure totalOrders is updated when CSV is fetched
 import { SalesValueChartData, SalesValueChart } from "../../components/Charts";
 import { GoogleGenerativeAI } from '@google/generative-ai';  // Import the library
-import * as cfg from "../../config";
-import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
-import { PageVisitsTable } from "../../components/Tables";
-import { trafficShares, totalOrders } from "../../data/charts";
 
 export default () => {
   const [showModal, setShowModal] = useState(false);
@@ -48,9 +44,9 @@ export default () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch(cfg.BACKEND_URL + '/upload', {
+      const response = await fetch('/upload', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (response.ok) {
@@ -67,7 +63,7 @@ export default () => {
     setIsLoading(true);
     setLoadingData(true);
     try {
-      const response = await fetch('http://127.0.0.1:5000/get-csv-data');
+      const response = await fetch('/get-csv-data');
       
       if (!response.ok) {
         throw new Error('Network response was not ok');
