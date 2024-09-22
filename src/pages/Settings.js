@@ -1,29 +1,34 @@
 import React, { useState } from 'react';
-import { Card, Button, Form, Row, Col } from '@themesberg/react-bootstrap';
+import { Card, Button, Form, Table } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import resumesData from './resumes.json';
 
 const Settings = () => {
   const [requestType, setRequestType] = useState('');
-  const [urgency, setUrgency] = useState('normal');
+  const [urgency, setUrgency] = useState('');
   const [skills, setSkills] = useState('');
-  const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [matchingResumes, setMatchingResumes] = useState([]);
+
+  const findMatchingResumes = (requirements) => {
+    return resumesData.filter(resume => 
+      resume.staffType === requirements.requestType &&
+      resume.urgency === requirements.urgency &&
+      resume.skills.includes(requirements.skills)
+    );
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send this data to your backend
-    console.log({ requestType, urgency, skills, date, startTime, endTime });
+    const requirements = { requestType, urgency, skills };
+    const matches = findMatchingResumes(requirements);
+    setMatchingResumes(matches);
     setShowAlert(true);
     // Reset form
     setRequestType('');
-    setUrgency('normal');
+    setUrgency('');
     setSkills('');
-    setDate('');
-    setStartTime('');
-    setEndTime('');
   };
 
   return (
@@ -54,6 +59,7 @@ const Settings = () => {
             <Form.Select 
               value={urgency} 
               onChange={(e) => setUrgency(e.target.value)}
+              required
             >
               <option value="">Select level of urgency...</option>
               <option value="low">Low</option>
@@ -68,6 +74,7 @@ const Settings = () => {
             <Form.Select 
               value={skills} 
               onChange={(e) => setSkills(e.target.value)}
+              required
             >
               <option value="">Select skill needed...</option>            
               <option value="cooking">Cooking</option>
@@ -79,50 +86,6 @@ const Settings = () => {
               <option value="dishwashing">Dishwashing</option>
             </Form.Select>
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>
-              <FontAwesomeIcon icon={faCalendarAlt} className="me-2" />
-              Date
-            </Form.Label>
-            <Form.Control 
-              type="date" 
-              value={date} 
-              onChange={(e) => setDate(e.target.value)}
-              required
-            />
-          </Form.Group>
-
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <FontAwesomeIcon icon={faClock} className="me-2" />
-                  Start Time
-                </Form.Label>
-                <Form.Control 
-                  type="time" 
-                  value={startTime} 
-                  onChange={(e) => setStartTime(e.target.value)}
-                  required
-                />
-              </Form.Group>
-            </Col>
-            
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <FontAwesomeIcon icon={faClock} className="me-2" />
-                  End Time
-                </Form.Label>
-                <Form.Control 
-                  type="time" 
-                  value={endTime} 
-                  onChange={(e) => setEndTime(e.target.value)}
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
 
           <Button variant="primary" type="submit">
             <FontAwesomeIcon icon={faUserPlus} className="me-2" /> Submit Request
@@ -132,6 +95,36 @@ const Settings = () => {
         {showAlert && (
           <div className="alert alert-success mt-3" role="alert">
             Your request has been submitted successfully! We'll notify you when we find a match.
+          </div>
+        )}
+
+        {matchingResumes.length > 0 && (
+          <div className="mt-4">
+            <h5>Matching Resumes</h5>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Staff Type</th>
+                  <th>Skills</th>
+                  <th>Urgency</th>
+                  <th>Phone Number</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {matchingResumes.map((resume, index) => (
+                  <tr key={index}>
+                    <td>{resume.name}</td>
+                    <td>{resume.staffType}</td>
+                    <td>{resume.skills.join(', ')}</td>
+                    <td>{resume.urgency}</td>
+                    <td>{resume.phoneNumber}</td>
+                    <td>{resume.email}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
         )}
       </Card.Body>

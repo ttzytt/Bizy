@@ -98,7 +98,7 @@ export default (props = {}) => {
               </Nav.Link>
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
-              <NavItem title="Bizly" link={Routes.Presentation.path} image={BizlyLogo} />
+              <NavItem title="Bizy" link={Routes.Presentation.path} image={BizlyLogo} />
 
               <NavItem title="Overview" link={Routes.DashboardOverview.path} icon={faChartPie} />
               <NavItem title="Collaboration" icon={faHandHoldingUsd} link={Routes.Transactions.path} />
@@ -108,7 +108,7 @@ export default (props = {}) => {
 
               <Dropdown.Divider className="my-3 border-indigo" />
               <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-              <NavItem external title="Bizly" link="https://github.com/ttzytt/Bizy_frontend" target="_blank" image={BizlyLogo} />
+              <NavItem external title="Bizy" link="https://github.com/ttzytt/Bizy_frontend" target="_blank" image={BizlyLogo} />
             </Nav>
           </div>
         </SimpleBar>
