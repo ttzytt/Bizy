@@ -1,90 +1,142 @@
-import React from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faCartArrowDown, faChartPie, faChevronDown, faClipboard, faCommentDots, faFileAlt, faPlus, faRocket, faStore } from '@fortawesome/free-solid-svg-icons';
-import { Col, Row, Button, Dropdown } from '@themesberg/react-bootstrap';
-import { ChoosePhotoWidget, ProfileCardWidget } from "../components/Widgets";
-import { GeneralInfoForm } from "../components/Forms";
+import React, { useState } from 'react';
+import { Card, Button, Form, Row, Col } from '@themesberg/react-bootstrap';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus, faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
 
-import Profile3 from "../assets/img/team/profile-picture-3.jpg";
+const Settings = () => {
+  const [requestType, setRequestType] = useState('');
+  const [urgency, setUrgency] = useState('normal');
+  const [skills, setSkills] = useState('');
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send this data to your backend
+    console.log({ requestType, urgency, skills, date, startTime, endTime });
+    setShowAlert(true);
+    // Reset form
+    setRequestType('');
+    setUrgency('normal');
+    setSkills('');
+    setDate('');
+    setStartTime('');
+    setEndTime('');
+  };
 
-export default () => {
   return (
-    <>
-      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
-        <Dropdown>
-          <Dropdown.Toggle as={Button} variant="secondary" className="text-dark me-2">
-            <FontAwesomeIcon icon={faPlus} className="me-2" />
-            <span>New</span>
-          </Dropdown.Toggle>
-          <Dropdown.Menu className="dashboard-dropdown dropdown-menu-left mt-2">
-            <Dropdown.Item>
-              <FontAwesomeIcon icon={faFileAlt} className="me-2" /> Document
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <FontAwesomeIcon icon={faCommentDots} className="me-2" /> Message
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <FontAwesomeIcon icon={faBoxOpen} className="me-2" /> Product
-            </Dropdown.Item>
+    <Card border="light" className="bg-white shadow-sm mb-4">
+      <Card.Body>
+        <h5 className="mb-4">Request Temporary Staff</h5>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Staff Type</Form.Label>
+            <Form.Select 
+              value={requestType} 
+              onChange={(e) => setRequestType(e.target.value)}
+              required
+            >
+              <option value="">Select staff type...</option>
+              <option value="chef">Chef</option>
+              <option value="server">Server</option>
+              <option value="cashier">Cashier</option>
+              <option value="janitor">Janitor</option>
+              <option value="manager">Manager</option>
+              <option value="bartender">Bartender</option>
+              <option value="dishwasher">Dishwasher</option>
+            </Form.Select>
+          </Form.Group>
 
-            <Dropdown.Divider />
+          <Form.Group className="mb-3">
+            <Form.Label>Urgency</Form.Label>
+            <Form.Select 
+              value={urgency} 
+              onChange={(e) => setUrgency(e.target.value)}
+            >
+              <option value="">Select level of urgency...</option>
+              <option value="low">Low</option>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+              <option value="emergency">Emergency</option>
+            </Form.Select>
+          </Form.Group>
 
-            <Dropdown.Item>
-              <FontAwesomeIcon icon={faRocket} className="text-danger me-2" /> Subscription Plan
-              </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+          <Form.Group className="mb-3">
+            <Form.Label>Skills</Form.Label>
+            <Form.Select 
+              value={skills} 
+              onChange={(e) => setSkills(e.target.value)}
+            >
+              <option value="">Select skill needed...</option>            
+              <option value="cooking">Cooking</option>
+              <option value="serving">Serving</option>
+              <option value="accounting">Accounting</option>
+              <option value="cleaning">Cleaning</option>
+              <option value="managing">Managing</option>
+              <option value="bartending">Bartending</option>
+              <option value="dishwashing">Dishwashing</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>
+              <FontAwesomeIcon icon={faCalendarAlt} className="me-2" />
+              Date
+            </Form.Label>
+            <Form.Control 
+              type="date" 
+              value={date} 
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <div className="d-flex">
-          <Dropdown>
-            <Dropdown.Toggle as={Button} variant="primary">
-              <FontAwesomeIcon icon={faClipboard} className="me-2" /> Reports
-              <span className="icon icon-small ms-1"><FontAwesomeIcon icon={faChevronDown} /></span>
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="dashboard-dropdown dropdown-menu-left mt-1">
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faBoxOpen} className="me-2" /> Products
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faStore} className="me-2" /> Customers
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faCartArrowDown} className="me-2" /> Orders
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faChartPie} className="me-2" /> Console
-              </Dropdown.Item>
-
-              <Dropdown.Divider />
-
-              <Dropdown.Item>
-                <FontAwesomeIcon icon={faRocket} className="text-success me-2" /> All Reports
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      </div>
-
-      <Row>
-        <Col xs={12} xl={8}>
-          <GeneralInfoForm />
-        </Col>
-
-        <Col xs={12} xl={4}>
           <Row>
-            <Col xs={12}>
-              <ProfileCardWidget />
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <FontAwesomeIcon icon={faClock} className="me-2" />
+                  Start Time
+                </Form.Label>
+                <Form.Control 
+                  type="time" 
+                  value={startTime} 
+                  onChange={(e) => setStartTime(e.target.value)}
+                  required
+                />
+              </Form.Group>
             </Col>
-            <Col xs={12}>
-              <ChoosePhotoWidget
-                title="Select profile photo"
-                photo={Profile3}
-              />
+            
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  <FontAwesomeIcon icon={faClock} className="me-2" />
+                  End Time
+                </Form.Label>
+                <Form.Control 
+                  type="time" 
+                  value={endTime} 
+                  onChange={(e) => setEndTime(e.target.value)}
+                  required
+                />
+              </Form.Group>
             </Col>
           </Row>
-        </Col>
-      </Row>
-    </>
+
+          <Button variant="primary" type="submit">
+            <FontAwesomeIcon icon={faUserPlus} className="me-2" /> Submit Request
+          </Button>
+        </Form>
+
+        {showAlert && (
+          <div className="alert alert-success mt-3" role="alert">
+            Your request has been submitted successfully! We'll notify you when we find a match.
+          </div>
+        )}
+      </Card.Body>
+    </Card>
   );
 };
+
+export default Settings;

@@ -23,6 +23,7 @@ import ReactLogo from "../assets/img/technologies/react-logo.svg";
 
 import pages from "../data/pages";
 import features from "../data/features";
+import BizyMain from "../assets/img/bizymain.png";
 
 export default () => {
   const PagePreview = (props) => {
@@ -103,7 +104,7 @@ export default () => {
           <Row>
             <Col xs={12} className="text-center">
               <div className="react-big-icon d-none d-lg-block"><span className="fab fa-react"></span></div>
-              <h1 className="fw-bolder text-secondary">Bizy</h1>
+              <Image src={BizyMain} alt="Your Logo" height={202} width={750} style={{ marginLeft: '45px' }}/>
               <p className="text-muted fw-light mb-5 h5">All in one app for small businesses to achieve success.</p>
               <div className="d-flex align-items-center justify-content-center">
                 <Button variant="secondary" as={Link} to={Routes.DashboardOverview.path} className="text-dark me-3">

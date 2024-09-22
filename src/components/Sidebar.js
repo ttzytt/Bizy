@@ -102,9 +102,9 @@ export default (props = {}) => {
 
               <NavItem title="Overview" link={Routes.DashboardOverview.path} icon={faChartPie} />
               <NavItem title="Collaboration" icon={faHandHoldingUsd} link={Routes.Transactions.path} />
-              <NavItem title="Settings" icon={faCog} link={Routes.Settings.path} />
-              <NavItem title="Marketing Generator" icon={faUser} link={Routes.MarketingGenerator.path} />
-              <NavItem title="Vendor Management" icon={faCog} link={Routes.VendorManagement.path} />
+              <NavItem title="Employee Search" icon={faCog} link={Routes.Settings.path} />
+              <NavItem title="Marketing" icon={faUser} link={Routes.MarketingGenerator.path} />
+              <NavItem title="Management" icon={faCog} link={Routes.VendorManagement.path} />
 
               <Dropdown.Divider className="my-3 border-indigo" />
               <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
