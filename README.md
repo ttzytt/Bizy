@@ -1,18 +1,15 @@
 <h1 align="center">
-    <a href="https://amplication.com/#gh-light-mode-only">
-    <img src="./.github/assets/amplication-logo-light-mode.svg">
     </a>
-    <a href="https://amplication.com/#gh-dark-mode-only">
-    <img src="./.github/assets/amplication-logo-dark-mode.svg">
+    <img src="https://github.com/ttzytt/Bizy/blob/main/src/assets/img/bizymain.png">
     </a>
 </h1>
 
 <p align="center">
-  <i align="center">Instantly generate production-ready .NET and Node.js backend apps 🚀</i>
+  <i align="center">The Best Management and Financial Software for Small Businesses 🚀</i>
 </p>
 
 <p align="center">
-    <img src="https://github.com/amplication/amplication/assets/149934977/80ed0d00-2f08-4bd8-92b1-1a347bb30ba6" alt="dashboard"/>
+    <img src="https://github.com/ttzytt/Bizy/blob/main/src/assets/img/bizymain.png" alt="dashboard"/>
 </p>
 
 
