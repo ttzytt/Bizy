@@ -44,7 +44,8 @@ export default () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('/upload', {
+      const response = await fetch('http://127.0.0.1:5000/upload', 
+      {
         method: 'POST',
         body: formData
       });
@@ -63,8 +64,8 @@ export default () => {
     setIsLoading(true);
     setLoadingData(true);
     try {
-      const response = await fetch('/get-csv-data');
-      
+      const response = await fetch('http://127.0.0.1:5000/get-csv-data');
+      console.log(response);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -241,14 +242,14 @@ export default () => {
       <Row className="justify-content-md-center">
         <Col xs={12} className="mb-4 d-none d-sm-block">
           <SalesValueWidget
-            title="Stock tracking"
+            title="Stock tracking (net change)"
             value={salesval}
             percentage={percentsales}
           />
         </Col>
         <Col xs={12} className="mb-4 d-sm-none">
           <SalesValueWidgetPhone
-            title="Stock tracking"
+            title="Stock tracking (net change)"
             value="10,567"
             percentage={10.57}
           />

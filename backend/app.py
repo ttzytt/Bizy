@@ -17,11 +17,13 @@ vendors_collection = db['vendors']
 inventory_collection = db['inventory']
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:3000"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 # Set the upload folder
 UPLOAD_FOLDER = 'uploads'   
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+print("hi")
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -49,7 +51,6 @@ def upload():
         print(f"An error occurred: {str(e)}")
         print(traceback.format_exc())
         return jsonify({'error': 'Internal server error'}), 500
-    
 @app.route('/inventory', methods=['GET'])
 def get_inventory():
     inventory = list(inventory_collection.find({}))
@@ -113,16 +114,17 @@ def delete_vendor(vendor_id):
         print(f"An error occurred: {str(e)}")
         print(traceback.format_exc())
         return jsonify({'error': 'Internal server error'}), 500
-    
 @app.route('/get-csv-data', methods=['GET'])
 def get_csv_data():
     csv_path = '/Users/kraj200/Downloads/pennhacks2024/Bizy_frontend/backend/uploads/data1.csv'
-    if not os.path.exists(csv_path):
-        return jsonify({'error': 'CSV file not found'}), 404
     try:
         with open(csv_path, 'r') as file:
-            csv_content = file.read()
-        return csv_content, 200, {'Content-Type': 'text/plain'}
+            csv_content = file.read()  # Read the entire CSV content
+            print(csv_content)
+        return csv_content, 200, {'Content-Type': 'text/plain'}  # Send as plain text
     except Exception as e:
         print(f"Error reading CSV: {str(e)}")
         return jsonify({'error': 'Failed to read CSV'}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
