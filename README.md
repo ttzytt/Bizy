@@ -33,3 +33,17 @@ https://devpost.com/software/bizy?ref_content=user-portfolio&ref_feature=in_prog
 - **[MongoDB](https://www.mongodb.com/)**
 - **[Gemini](https://gemini.google.com/app)**
 - Also used Overpass, OpenStreetMaps, HTML, Cors, and JS
+
+## Team Members
+
+Rikhil Tanugula, Piedmont Hills High School
+- Full Stack, Design, Devpost/Github
+  
+Vihaan Sharma, Mission College
+- Full Stack, Design, Devpost/Github
+  
+Tony Zhao, Princeton International School of Mathematics and Science
+- Full Stack, Design, Devpost/Github
+  
+Simran Duggi, Cornell University
+- Design, Devpost
