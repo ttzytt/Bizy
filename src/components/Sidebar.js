@@ -107,9 +107,8 @@ export default (props = {}) => {
               <NavItem title="Vendor Management" icon={faCog} link={Routes.VendorManagement.path} />
 
               <Dropdown.Divider className="my-3 border-indigo" />
-
+              <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
               <NavItem external title="Bizly" link="https://github.com/ttzytt/Bizy_frontend" target="_blank" image={BizlyLogo} />
-              <Button as={Link} to={Routes.Upgrade.path} variant="secondary" className="upgrade-to-pro"><FontAwesomeIcon icon={faRocket} className="me-1" /> Upgrade to Pro</Button>
             </Nav>
           </div>
         </SimpleBar>
