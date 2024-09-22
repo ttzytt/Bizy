@@ -1,12 +1,17 @@
 import React, { useState, useRef } from 'react';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import './MarketingGenerator.css';
 
-const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0');
+
+// rikhil api key: AIzaSyCvdIUp2Ok6b0ltfS-KsaV75NJy45br-Lo
+// rikhil calendar id: e8dc5521652742d79a7882d8ab52d95347e7ce5ee68fd0f3cbd7c52ea921fc2c@group.calendar.google.com
+// tony api key: AIzaSyCmOvQJzRDgnGS7baE6pf8v2CzSGLIZvsg
+// tony calendar id: 6db397f9e4df5b89c9192ea4d8c311fa306d08f0d87884a116c11d497594c9b7@group.calendar.google.com
+
 
 const MarketingGenerator = () => {
   const [eventDescription, setEventDescription] = useState('');
@@ -17,6 +22,8 @@ const MarketingGenerator = () => {
   const [postLength, setPostLength] = useState('medium');
   const [events, setEvents] = useState([]);
   const [showGoogleEvents, setShowGoogleEvents] = useState(false);
+  const [calendarId, setCalendarId] = useState(''); // State for Calendar ID
+  const [apiKey, setApiKey] = useState(''); // State for API Key
   const calendarRef = useRef(null);
 
   const generatePost = async () => {
@@ -24,64 +31,16 @@ const MarketingGenerator = () => {
       alert('Please enter an event description');
       return;
     }
-  
+
     setIsGenerating(true);
     setGeneratedPost('');
-  
-    try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      
-      const prompt = `
-        Create an engaging Instagram post for the following event or topic:
-        "${eventDescription}"
-  
-        Consider the following:
-        - Tone: ${tone}
-        - Target Audience: ${targetAudience}
-        - Post Length: ${postLength}
-  
-        The post should:
-        - Start with an attention-grabbing opening line
-        - Include relevant emojis throughout the text
-        - Use appropriate hashtags (3-5)
-        - End with a clear call-to-action
-  
-        Format the post as it would appear on Instagram, including line breaks.
-  
-        Also, suggest 3 potential event dates in the next 3 months with titles.
-      `;
-  
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-  
-      console.log('API Response:', text); // this code console.logs 'API Response:' as text.
-  
-      setGeneratedPost(text);
-  
-      // parsationnnnnn
-      try {
-        const generatedContent = JSON.parse(text);
-        if (generatedContent.events) {
-          const newEvents = generatedContent.events.map(event => ({
-            ...event,
-            extendedProps: { post: generatedContent.post, status: 'pending' }
-          }));
-          setEvents(prevEvents => [...prevEvents, ...newEvents]);
-          
-          const calendarApi = calendarRef.current.getApi();
-          newEvents.forEach(event => calendarApi.addEvent(event));
-        }
-      } catch (jsonError) {
-        console.log('Response is not in JSON format, using as plain text');
-      }
-  
-    } catch (error) {
-      console.error('Error generating post:', error);
-      setGeneratedPost('Error generating post. Please try again.');
-    } finally {
+
+    // Simulate API Call for post generation (replace with actual code as needed)
+    setTimeout(() => {
+      const generatedText = `Generated post for: "${eventDescription}"`;
+      setGeneratedPost(generatedText);
       setIsGenerating(false);
-    }
+    }, 1000);
   };
 
   const copyToClipboard = () => {
@@ -96,43 +55,17 @@ const MarketingGenerator = () => {
       alert(`Google Calendar Event: ${event.title}\nDate: ${event.start.toDateString()}`);
     } else {
       const status = event.extendedProps.status;
-      if (status === 'pending') {
-        const accept = window.confirm(`Accept this event?\n\nTitle: ${event.title}\nDate: ${event.start.toDateString()}`);
-        if (accept) {
-          event.setExtendedProp('status', 'accepted');
-          event.setProp('backgroundColor', 'green');
-        } else {
-          event.setExtendedProp('status', 'declined');
-          event.setProp('backgroundColor', 'red');
-        }
-      } else {
-        alert(`Event: ${event.title}\nDate: ${event.start.toDateString()}\nStatus: ${status}\n\nPost:\n${event.extendedProps.post}`);
-      }
+      alert(`Event: ${event.title}\nDate: ${event.start.toDateString()}\nStatus: ${status}\n\nPost:\n${event.extendedProps.post}`);
     }
   };
 
   const eventContent = (eventInfo) => {
-    if (eventInfo.event.source && eventInfo.event.source.googleCalendarId) {
-      return (
-        <>
-          <b>{eventInfo.timeText}</b>
-          <i>{eventInfo.event.title}</i>
-          <span className="event-icon google">G</span>
-        </>
-      );
-    }
     return (
       <>
         <b>{eventInfo.timeText}</b>
         <i>{eventInfo.event.title}</i>
-        {eventInfo.event.extendedProps.status === 'pending' && 
-          <span className="event-icon pending">?</span>
-        }
-        {eventInfo.event.extendedProps.status === 'accepted' && 
-          <span className="event-icon accepted">✓</span>
-        }
-        {eventInfo.event.extendedProps.status === 'declined' && 
-          <span className="event-icon declined">✗</span>
+        {eventInfo.event.source && eventInfo.event.source.googleCalendarId &&
+          <span className="event-icon google">G</span>
         }
       </>
     );
@@ -141,7 +74,7 @@ const MarketingGenerator = () => {
   return (
     <div className="marketing-generator">
       <h1>Marketing Event Planner</h1>
-      
+
       <div className="input-section">
         <textarea
           value={eventDescription}
@@ -149,7 +82,7 @@ const MarketingGenerator = () => {
           placeholder="Describe your event or topic briefly..."
           rows="3"
         />
-        
+
         <div className="options">
           <select value={tone} onChange={(e) => setTone(e.target.value)}>
             <option value="casual">Casual</option>
@@ -157,26 +90,26 @@ const MarketingGenerator = () => {
             <option value="excited">Excited</option>
             <option value="informative">Informative</option>
           </select>
-          
+
           <select value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)}>
             <option value="general">General</option>
             <option value="youth">Youth</option>
             <option value="professionals">Professionals</option>
             <option value="seniors">Seniors</option>
           </select>
-          
+
           <select value={postLength} onChange={(e) => setPostLength(e.target.value)}>
             <option value="short">Short</option>
             <option value="medium">Medium</option>
             <option value="long">Long</option>
           </select>
         </div>
-        
+
         <button onClick={generatePost} disabled={isGenerating} className="generate-btn">
           {isGenerating ? 'Generating...' : 'Generate Post and Events'}
         </button>
       </div>
-      
+
       <div className="output-section">
         <h2>Generated Post</h2>
         <textarea
@@ -193,6 +126,34 @@ const MarketingGenerator = () => {
 
       <div className="calendar-container">
         <h2>Event Calendar</h2>
+
+        {/* Input for API Key */}
+        <div className="api-key-input">
+          <label>Google API Key:</label>
+          <input
+            type="text"
+            value={apiKey}
+            // onChange={(e) => setApiKey(e.target.value)}
+            // on change -> first print then setapikey
+            onChange={(e) => {
+              console.log("setting api key " + e.target.value);
+              setApiKey(e.target.value);
+            }}
+            placeholder="Enter your Google API Key"
+          />
+        </div>
+
+        {/* Input for Calendar ID */}
+        <div className="calendar-id-input">
+          <label>Google Calendar ID:</label>
+          <input
+            type="text"
+            value={calendarId}
+            onChange={(e) => setCalendarId(e.target.value)}
+            placeholder="Enter Google Calendar ID"
+          />
+        </div>
+
         <label className="google-events-toggle">
           <input
             type="checkbox"
@@ -201,6 +162,7 @@ const MarketingGenerator = () => {
           />
           Show Google Calendar Events
         </label>
+
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin, googleCalendarPlugin]}
@@ -208,10 +170,10 @@ const MarketingGenerator = () => {
           events={events}
           eventClick={handleEventClick}
           eventContent={eventContent}
-          googleCalendarApiKey="AIzaSyCvdIUp2Ok6b0ltfS-KsaV75NJy45br-Lo"
+          googleCalendarApiKey={apiKey} // Use the API key from the state
           eventSources={[
             ...(showGoogleEvents ? [{
-              googleCalendarId: 'e8dc5521652742d79a7882d8ab52d95347e7ce5ee68fd0f3cbd7c52ea921fc2c@group.calendar.google.com',
+              googleCalendarId: calendarId,
               color: 'blue',
             }] : [])
           ]}
