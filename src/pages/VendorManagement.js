@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import './VendorManagement.css';
-import * as cfg from "../config"
-const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0'); 
+import * as cfg from "../config";
+const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0');
 
 const VendorManagement = () => {
   const [vendorName, setVendorName] = useState('');
@@ -10,9 +10,10 @@ const VendorManagement = () => {
   const [vendorAddress, setVendorAddress] = useState('');
   const [contractLength, setContractLength] = useState('');
   const [vendors, setVendors] = useState([]);
-
   const [emailContent, setEmailContent] = useState('');
   const [isGeneratingEmail, setIsGeneratingEmail] = useState(false);
+  const [contractTemplate, setContractTemplate] = useState(''); // New state for contract template
+  const [isGeneratingContract, setIsGeneratingContract] = useState(false); // New state for contract generation
 
   const [inventoryItems, setInventoryItems] = useState([]);
   const [newItem, setNewItem] = useState({
@@ -69,7 +70,7 @@ const VendorManagement = () => {
     setIsGeneratingEmail(true);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      
+
       const prompt = `
         Write a professional email to a vendor named ${vendorName} requesting a restock of ${quantity} ${itemName}(s). 
         The email should:
@@ -82,7 +83,7 @@ const VendorManagement = () => {
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
-      
+
       setEmailContent(text);
     } catch (error) {
       console.error('Error generating email:', error);
@@ -97,13 +98,14 @@ const VendorManagement = () => {
       alert('Please fill in all vendor fields');
       return;
     }
-
+  
     const newVendor = {
       name: vendorName,
       email: vendorEmail,
       address: vendorAddress,
       contract_length: contractLength,
     };
+    
     try {
       const response = await fetch(cfg.BACKEND_URL + '/vendors', {
         method: 'POST',
@@ -113,47 +115,26 @@ const VendorManagement = () => {
       
       if (response.ok) {
         const createdVendor = await response.json();
-        console.log("setVendors called with response of " + JSON.stringify(createdVendor));
-        console.log("setVendors called with response of " + createdVendor._id);
         setVendors((prevVendors) => [...prevVendors, createdVendor]);
         setVendorName('');
         setVendorEmail('');
         setVendorAddress('');
         setContractLength('');
       } else {
-        console.error('Error adding vendor:');
+        console.error('Error adding vendor:', response);
       }
-
+  
     } catch (error) {
       console.error('Error adding vendor:', error);
     }
   };
-
-  const deleteVendor = async (vendorId) => {
-    console.log("deleteVendor called with vendorId of " + vendorId);
-    try {
-      const response = await fetch(`${cfg.BACKEND_URL}/vendors/${vendorId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        setVendors((prevVendors) => prevVendors.filter(vendor => vendor._id !== vendorId));
-      } else {
-        console.error('Error deleting vendor:', response);
-      }
-    } catch (error) {
-      console.error('Error deleting vendor:', error);
-    }
-  };
-
-
-
+  
   const addInventoryItem = async () => {
     if (!newItem.name || !newItem.quantity || !newItem.unit || !newItem.batchNumber || !newItem.expiryDate || !newItem.vendorId) {
       alert('Please fill in all inventory fields');
       return;
     }
-
+  
     const newInventoryItem = {
       name: newItem.name,
       quantity: newItem.quantity,
@@ -162,14 +143,14 @@ const VendorManagement = () => {
       expiryDate: newItem.expiryDate,
       vendorId: newItem.vendorId,
     }
-
+  
     try {
       const response = await fetch(cfg.BACKEND_URL + '/inventory', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newInventoryItem),
       });
-
+  
       if (response.ok) {
         const createdItem = await response.json();
         setInventoryItems((prevItems) => [...prevItems, createdItem]);
@@ -189,22 +170,33 @@ const VendorManagement = () => {
     }
   };
 
-  const deleteInventoryItem = async (itemId) => {
+  const generateContractTemplate = async () => {
+    setIsGeneratingContract(true);
     try {
-      const response = await fetch(`${cfg.BACKEND_URL}/inventory/${itemId}`, {
-        method: 'DELETE',
-      });
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      if (response.ok) {
-        setInventoryItems((prevItems) => prevItems.filter(item => item._id !== itemId));
-      } else {
-        console.error('Error deleting inventory item:', response);
-      }
+      const prompt = `
+        Create a contract template for a vendor named ${vendorName} and a shop owner. 
+        The contract should include:
+        - Vendor details (name, address, email)
+        - Shop owner details
+        - Contract length of ${contractLength} months
+        - Terms and conditions
+        - Signatures
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+
+      setContractTemplate(text);
     } catch (error) {
-      console.error('Error deleting inventory item:', error);
+      console.error('Error generating contract template:', error);
+      setContractTemplate('Failed to generate contract template. Please try again.');
+    } finally {
+      setIsGeneratingContract(false);
     }
   };
-
 
   const checkExpiryAlerts = () => {
     const today = new Date();
@@ -230,7 +222,7 @@ const VendorManagement = () => {
   return (
     <div className="container py-4">
       <h1>Vendor and Inventory Management</h1>
-      
+
       <h2>Vendor Management</h2>
       <div className="input-group mb-4">
         <input type="text" placeholder="Vendor Name" value={vendorName} onChange={(e) => setVendorName(e.target.value)} />
@@ -251,14 +243,11 @@ const VendorManagement = () => {
         </thead>
         <tbody>
           {vendors.map((vendor) => (
-            <tr key={vendor._id}>
+            <tr>
               <td>{vendor.name}</td>
               <td>{vendor.email}</td>
               <td>{vendor.address}</td>
               <td>{vendor.contract_length}</td>
-              <td>
-                <button onClick={() => deleteVendor(vendor._id)}>Delete</button>
-              </td>
             </tr>
           ))}
         </tbody>
@@ -274,11 +263,10 @@ const VendorManagement = () => {
         <select value={newItem.vendorId} onChange={(e) => setNewItem({ ...newItem, vendorId: e.target.value })}>
           <option value="">Select Vendor</option>
           {vendors.map(vendor => (
-            <option key={vendor._id} value={vendor._id}>{vendor.name}</option>
+            <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
           ))}
         </select>
         <button onClick={addInventoryItem}>Add Inventory Item</button>
-      </div>
 
       <table className="table">
         <thead>
@@ -294,43 +282,48 @@ const VendorManagement = () => {
         </thead>
         <tbody>
           {inventoryItems.map(item => (
-            <tr key={item._id}>
+            <tr key={item.id}>
               <td>{item.name}</td>
               <td>{item.quantity}</td>
               <td>{item.unit}</td>
               <td>{item.batchNumber}</td>
               <td>{item.expiryDate}</td>
-              <td>{vendors.find(v => v._id === parseInt(item.vendorId))?.name || 'N/A'}</td>
+              <td>{vendors.find(v => v.id === parseInt(item.vendorId))?.name || 'N/A'}</td>
               <td>{forecastInventory(item.name)}</td>
-              <td>
-                <button onClick={() => deleteInventoryItem(item._id)}>Delete</button>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
+      <h2>Generate Contract Template</h2>
+      <button onClick={generateContractTemplate} disabled={isGeneratingContract}>
+        {isGeneratingContract ? 'Generating...' : 'Generate Contract'}
+      </button>
+      <textarea value={contractTemplate} rows="10" placeholder="Generated contract template will appear here..." />
+      </div>
+
       <h2>Expiry Alerts</h2>
       <ul className="expiry-alerts">
         {checkExpiryAlerts().map(item => (
-          <li key={item._id} className="expiry-alert">
+          <li key={item.id} className="expiry-alert">
             {item.name} (Batch: {item.batchNumber}) expires on {item.expiryDate}
           </li>
         ))}
       </ul>
+
       <h2>Generate Restock Request Email</h2>
       <div className="input-group mb-4">
         <select onChange={(e) => {
-          const vendor = vendors.find(v => v._id === parseInt(e.target.value));
+          const vendor = vendors.find(v => v.id === parseInt(e.target.value));
           if (vendor) setVendorName(vendor.name);
         }}>
           <option value="">Select Vendor</option>
           {vendors.map(vendor => (
-            <option key={vendor._id} value={vendor._id}>{vendor.name}</option>
+            <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
           ))}
         </select>
         <select onChange={(e) => {
-          const item = inventoryItems.find(i => i._id === parseInt(e.target.value));
+          const item = inventoryItems.find(i => i.id === parseInt(e.target.value));
           if (item) {
             setNewItem({...newItem, name: item.name});
             setRestockQuantity(item.quantity); // Set to current item quantity
@@ -338,7 +331,7 @@ const VendorManagement = () => {
         }}>
           <option value="">Select Item</option>
           {inventoryItems.map(item => (
-            <option key={item._id} value={item._id}>{item.name}</option>
+            <option key={item.id} value={item.id}>{item.name}</option>
           ))}
         </select>
         <input 
@@ -353,6 +346,7 @@ const VendorManagement = () => {
         >
           {isGeneratingEmail ? 'Generating...' : 'Generate Email'}
         </button>
+        
       </div>
       <textarea
         className="email-content"
@@ -362,6 +356,8 @@ const VendorManagement = () => {
         placeholder="Generated email will appear here..."
       />
     </div>
+    
+
   );
 };
 
