@@ -1,0 +1,104 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .input-group input,
+  .input-group select,
+  .input-group button {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .input-group button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .input-group button:hover {
+    background-color: #0056b3;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  .expiry-alerts {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .expiry-alert {
+    background-color: #ffdddd;
+    border: 1px solid #f44336;
+    color: #f44336;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+
+  .email-content {
+    width: 100%;
+    min-height: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+  
+  .input-group select,
+  .input-group input[type="number"] {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .input-group button {
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 768px) {
+    .input-group {
+      flex-direction: column;
+    }
+    
+    .input-group select,
+    .input-group input,
+    .input-group button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }

@@ -5,65 +5,23 @@ import os
 from flask_cors import CORS
 import traceback
 from werkzeug.utils import secure_filename
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+from bson.objectid import ObjectId 
 from flask import send_file
 import io
+mongo_uri = "mongodb+srv://tzyt:tzyt@cluster0.fcbm3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+client = MongoClient(mongo_uri, server_api=ServerApi('1'))
+db = client['Bizy']
+vendors_collection = db['vendors']
+inventory_collection = db['inventory']
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # Set the upload folder
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'uploads'   
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# @app.route('/chat', methods=['POST'])
-# def chat():
-    
-#     user_message = request.json.get('message')
-
-#     if not user_message:
-#         return jsonify({"error": "Message is required"}), 400
-
-#     url = "https://proxy.tune.app/chat/completions"
-#     API_KEY = 'sk-tune-P2rQo1yVjT5bKrrbfLl5872UFvCmPydwdra'
-#     headers = {
-#         "Authorization": f"Bearer{API_KEY}",  # Your Tune API key
-#         "Content-Type": "application/json",
-#     }
-#     data = {
-#         "temperature": 0.8,
-#         "messages": [
-#             {
-#                 "role": "system",
-#                 "content": "Act as an assistant for small businesses"
-#             },
-#             {
-#                 "role": "user",
-#                 "content": user_message
-#             }
-#         ],
-#         "model": "meta/llama-3.1-405b-instruct",
-#         "stream": False,
-#         "frequency_penalty": 0,
-#         "max_tokens": 900
-#     }
-
-#     try:
-#         # Send request to the LLM API
-#         response = requests.post(url, headers=headers, json=data)
-
-#         # Print the response text for debugging
-#         print(response.text)
-
-#         if response.ok:
-#             ai_response = response.json()
-#             prediction = ai_response.get("choices", [])[0].get("message", {}).get("content", "No insights available")
-#             print(prediction)
-#             return (prediction), 200
-#         else:
-#             return ("Failed to get AI response"), response.status_code
-
-#     except Exception as e:
-#         return ("error"+ str(e)), 500
 
 
 @app.route('/upload', methods=['POST'])
@@ -92,7 +50,69 @@ def upload():
         print(f"An error occurred: {str(e)}")
         print(traceback.format_exc())
         return jsonify({'error': 'Internal server error'}), 500
+@app.route('/inventory', methods=['GET'])
+def get_inventory():
+    inventory = list(inventory_collection.find({}))
+    for item in inventory:
+        item['_id'] = str(item['_id'])  # Convert ObjectId to string
+    return jsonify(inventory)
 
+@app.route('/inventory', methods=['POST'])
+def add_inventory_item():
+    item_data = request.json
+    result = inventory_collection.insert_one(item_data)
+    if '_id' in item_data:
+        item_data['_id'] = str(item_data['_id'])   
+    ret = {'id': str(result.inserted_id), **item_data} 
+    return jsonify(ret), 201
+
+@app.route('/inventory/<item_id>', methods=['DELETE'])
+def delete_inventory_item(item_id):     
+    print("deleting item " + item_id)
+    try:
+        result = inventory_collection.delete_one({'_id': ObjectId(item_id)})
+        if result.deleted_count == 1:
+            return jsonify({'message': 'Inventory item deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Item not found'}), 404
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/vendors', methods=['GET'])
+def get_vendors():
+    print("Get vendors function called")
+    print(type(vendors_collection))
+    vendors = list(vendors_collection.find({}))
+    for vendor in vendors:
+        vendor['_id'] = str(vendor['_id'])  # Convert ObjectId to string
+    return jsonify(vendors)
+
+@app.route('/vendors', methods=['POST'])
+def add_vendor():
+    vendor_data = request.json
+    result = vendors_collection.insert_one(vendor_data)
+    # Check if 'vendor_data' has an '_id' field and convert it if necessary
+    if '_id' in vendor_data:
+        vendor_data['_id'] = str(vendor_data['_id'])
+    # return the newly added vendor data and the id of the new vendor
+    ret = {'id': str(result.inserted_id), **vendor_data}
+    return jsonify(ret), 201
+
+@app.route('/vendors/<vendor_id>', methods=['DELETE'])
+def delete_vendor(vendor_id):
+    print("deleting vendor " + vendor_id)
+    try:
+        result = vendors_collection.delete_one({'_id': ObjectId(vendor_id)})
+        if result.deleted_count == 1:
+            return jsonify({'message': 'Vendor deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Vendor not found'}), 404
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({'error': 'Internal server error'}), 500
 @app.route('/get-csv-data', methods=['GET'])
 def get_csv_data():
     csv_path = '/Users/kraj200/Downloads/pennhacks2024/Bizy_frontend/backend/uploads/data1.csv'

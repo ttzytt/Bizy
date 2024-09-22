@@ -1,0 +1,188 @@
+/* MarketingGenerator.css */
+
+:root {
+  --primary-blue: #1E90FF;
+  --dark-blue: #00008B;
+  --light-blue: #87CEFA;
+  --white: #FFFFFF;
+  --light-gray: #F0F8FF;
+}
+
+body {
+  background-color: var(--light-gray);
+}
+
+.marketing-generator {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: var(--dark-blue);
+}
+
+h1, h2 {
+  color: var(--dark-blue);
+  margin-bottom: 20px;
+}
+
+.input-section {
+  margin-bottom: 30px;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--light-blue);
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 16px;
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--light-blue);
+  font-size: 14px;
+  background-color: var(--white);
+  color: var(--dark-blue);
+}
+
+.generate-btn, .copy-btn {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.generate-btn:hover, .copy-btn:hover {
+  background-color: var(--dark-blue);
+}
+
+.generate-btn:disabled {
+  background-color: var(--light-blue);
+  cursor: not-allowed;
+}
+
+.output-section {
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.generated-post-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 15px;
+  border: 1px solid var(--light-blue);
+  border-radius: 6px;
+  background-color: var(--white);
+  color: var(--dark-blue);
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.generated-post-textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+}
+
+.copy-btn {
+  display: block;
+  margin-left: auto;
+}
+
+.calendar-container {
+  margin-top: 30px;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.google-events-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.google-events-toggle input {
+  margin-right: 8px;
+}
+
+.event-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 12px;
+  margin-left: 5px;
+  color: var(--white);
+}
+
+.event-icon.google {
+  background-color: var(--primary-blue);
+}
+
+.event-icon.pending {
+  background-color: var(--light-blue);
+}
+
+.event-icon.accepted {
+  background-color: #4CAF50;
+}
+
+.event-icon.declined {
+  background-color: #F44336;
+}
+
+/* FullCalendar Overrides */
+.fc .fc-button-primary {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.fc .fc-button-primary:hover {
+  background-color: var(--dark-blue);
+  border-color: var(--dark-blue);
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: var(--light-blue);
+  border-color: var(--light-blue);
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: var(--light-blue);
+}
+
+.fc .fc-highlight {
+  background-color: var(--light-blue);
+  opacity: 0.3;
+}
