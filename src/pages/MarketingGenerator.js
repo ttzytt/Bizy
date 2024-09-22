@@ -5,12 +5,34 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import './MarketingGenerator.css';
-
+import * as cfg from "../config"
 
 // rikhil api key: AIzaSyCvdIUp2Ok6b0ltfS-KsaV75NJy45br-Lo
 // rikhil calendar id: e8dc5521652742d79a7882d8ab52d95347e7ce5ee68fd0f3cbd7c52ea921fc2c@group.calendar.google.com
 // tony api key: AIzaSyCmOvQJzRDgnGS7baE6pf8v2CzSGLIZvsg
 // tony calendar id: 6db397f9e4df5b89c9192ea4d8c311fa306d08f0d87884a116c11d497594c9b7@group.calendar.google.com
+
+
+var inventoryItems = [];
+var vendors = [];
+var events = [];
+
+function transformInventoryToEvents(inventoryItems, vendors) {
+  return inventoryItems.map(item => {
+    // Find the vendor corresponding to the vendorId in the inventory item
+    const vendor = vendors.find(v => v._id === item.vendorId);
+
+    // Construct the event title
+    const eventTitle = `${item.quantity} ${item.unit} of ${item.name} by ${vendor.name} expires`;
+
+    // Create the event object
+    return {
+      title: eventTitle,
+      date: item.expiryDate,
+    };
+  });
+}
+
 
 
 const MarketingGenerator = () => {
@@ -20,12 +42,40 @@ const MarketingGenerator = () => {
   const [tone, setTone] = useState('casual');
   const [targetAudience, setTargetAudience] = useState('general');
   const [postLength, setPostLength] = useState('medium');
-  const [events, setEvents] = useState([]);
   const [showGoogleEvents, setShowGoogleEvents] = useState(false);
   const [calendarId, setCalendarId] = useState(''); // State for Calendar ID
   const [apiKey, setApiKey] = useState(''); // State for API Key
   const calendarRef = useRef(null);
-
+  
+  useEffect(() => {
+    const fetchInventoryItems = async () => {
+      try {
+        const response = await fetch(cfg.BACKEND_URL + '/inventory');
+        const data = await response.json();
+        inventoryItems = data;
+      } catch (error) {
+        console.error('Error fetching inventory items:', error);
+      }
+    };
+  
+    const fetchVendors = async () => {
+      try {
+        const response = await fetch(cfg.BACKEND_URL + '/vendors');
+        const data = await response.json();
+        vendors = data;
+      } catch (error) {
+        console.error('Error fetching vendors:', error);
+      }
+    };
+  
+    const fetchData = async () => {
+      await Promise.all([fetchInventoryItems(), fetchVendors()]);
+      events = transformInventoryToEvents(inventoryItems, vendors); // Generate events
+    };
+  
+    fetchData();
+  }, []);
+  
   const generatePost = async () => {
     if (!eventDescription.trim()) {
       alert('Please enter an event description');
