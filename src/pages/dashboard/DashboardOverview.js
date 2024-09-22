@@ -6,7 +6,7 @@ import { Col, Row, Button, Dropdown, ButtonGroup, Modal, Form } from '@themesber
 import { CounterWidget, CircleChartWidget, BarChartWidget, TeamMembersWidget, ProgressTrackWidget, RankingWidget, SalesValueWidget, SalesValueWidgetPhone, AcquisitionWidget } from "../../components/Widgets";
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
-
+import * as cfg from "../../config";
 export default () => {
   // State for managing the modal visibility
   const [showModal, setShowModal] = useState(false);
@@ -29,7 +29,7 @@ export default () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/upload', {
+      const response = await fetch(cfg.BACKEND_URL + '/upload', {
         method: 'POST',
         body: formData,
       });

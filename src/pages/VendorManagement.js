@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import './VendorManagement.css';
-
+import * as cfg from "../config"
 const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0'); // Replace with your actual API key
 
 const VendorManagement = () => {
@@ -26,6 +26,34 @@ const VendorManagement = () => {
 
   const [salesData, setSalesData] = useState([]);
 
+  useEffect(() => {
+    const fetchVendors = async () => {
+      try {
+        const response = await fetch(cfg.BACKEND_URL + '/vendors');
+        const data = await response.json();
+        setVendors(data);
+      } catch (error) {
+        console.error('Error fetching vendors:', error);
+      }
+    };
+
+    fetchVendors();
+  }, []);
+
+  useEffect(() => {
+    const fetchInventoryItems = async () => {
+      try {
+        const response = await fetch(cfg.BACKEND_URL + '/inventory');
+        const data = await response.json();
+        setInventoryItems(data);
+      } catch (error) {
+        console.error('Error fetching inventory items:', error);
+      }
+    };
+
+    fetchInventoryItems();
+  }, []);
+  
   useEffect(() => {
     const simulatedSalesData = [
       { date: '2024-09-01', itemName: 'Tomatoes', quantity: 50 },
@@ -62,26 +90,40 @@ const VendorManagement = () => {
     }
   };
 
-  const addVendor = () => {
+  const addVendor = async () => {
     if (!vendorName || !vendorEmail || !vendorAddress || !contractLength) {
       alert('Please fill in all vendor fields');
       return;
     }
 
     const newVendor = {
-      id: Date.now(),
       name: vendorName,
       email: vendorEmail,
       address: vendorAddress,
       contract_length: contractLength,
     };
+    try {
+      const response = await fetch(cfg.BACKEND_URL + '/vendors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newVendor),
+      });
+      
+      if (response.ok) {
+        const createdVendor = await response.json();
+        setVendors((prevVendors) => [...prevVendors, createdVendor]);
+        console.log("setVendors called with response of " + createdVendor);
+        setVendorName('');
+        setVendorEmail('');
+        setVendorAddress('');
+        setContractLength('');
+      } else {
+        console.error('Error adding vendor:');
+      }
 
-    setVendors((prevVendors) => [...prevVendors, newVendor]);
-
-    setVendorName('');
-    setVendorEmail('');
-    setVendorAddress('');
-    setContractLength('');
+    } catch (error) {
+      console.error('Error adding vendor:', error);
+    }
   };
 
   const addInventoryItem = () => {
@@ -118,8 +160,8 @@ const VendorManagement = () => {
   return (
     <div className="container py-4">
       <h1>Vendor and Inventory Management</h1>
-      
-      {}
+
+      { }
       <h2>Vendor Management</h2>
       <div className="input-group mb-4">
         <input type="text" placeholder="Vendor Name" value={vendorName} onChange={(e) => setVendorName(e.target.value)} />
@@ -140,7 +182,7 @@ const VendorManagement = () => {
         </thead>
         <tbody>
           {vendors.map((vendor) => (
-            <tr key={vendor.id}>
+            <tr>
               <td>{vendor.name}</td>
               <td>{vendor.email}</td>
               <td>{vendor.address}</td>
@@ -150,15 +192,15 @@ const VendorManagement = () => {
         </tbody>
       </table>
 
-      {}
+      { }
       <h2>Inventory Management</h2>
       <div className="input-group mb-4">
-        <input type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} />
-        <input type="number" placeholder="Quantity" value={newItem.quantity} onChange={(e) => setNewItem({...newItem, quantity: e.target.value})} />
-        <input type="text" placeholder="Unit" value={newItem.unit} onChange={(e) => setNewItem({...newItem, unit: e.target.value})} />
-        <input type="text" placeholder="Batch Number" value={newItem.batchNumber} onChange={(e) => setNewItem({...newItem, batchNumber: e.target.value})} />
-        <input type="date" placeholder="Expiry Date" value={newItem.expiryDate} onChange={(e) => setNewItem({...newItem, expiryDate: e.target.value})} />
-        <select value={newItem.vendorId} onChange={(e) => setNewItem({...newItem, vendorId: e.target.value})}>
+        <input type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} />
+        <input type="number" placeholder="Quantity" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} />
+        <input type="text" placeholder="Unit" value={newItem.unit} onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })} />
+        <input type="text" placeholder="Batch Number" value={newItem.batchNumber} onChange={(e) => setNewItem({ ...newItem, batchNumber: e.target.value })} />
+        <input type="date" placeholder="Expiry Date" value={newItem.expiryDate} onChange={(e) => setNewItem({ ...newItem, expiryDate: e.target.value })} />
+        <select value={newItem.vendorId} onChange={(e) => setNewItem({ ...newItem, vendorId: e.target.value })}>
           <option value="">Select Vendor</option>
           {vendors.map(vendor => (
             <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
@@ -217,7 +259,7 @@ const VendorManagement = () => {
         <select onChange={(e) => {
           const item = inventoryItems.find(i => i.id === parseInt(e.target.value));
           if (item) {
-            setNewItem({...newItem, name: item.name, quantity: item.quantity});
+            setNewItem({ ...newItem, name: item.name, quantity: item.quantity });
           }
         }}>
           <option value="">Select Item</option>
@@ -225,28 +267,28 @@ const VendorManagement = () => {
             <option key={item.id} value={item.id}>{item.name}</option>
           ))}
         </select>
-        <input 
-          type="number" 
-          placeholder="Restock Quantity" 
-          value={newItem.quantity} 
-          onChange={(e) => setNewItem({...newItem, quantity: e.target.value})}
+        <input
+          type="number"
+          placeholder="Restock Quantity"
+          value={newItem.quantity}
+          onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
         />
-        <button 
+        <button
           onClick={() => generateEmail(vendorName, newItem.name, newItem.quantity)}
           disabled={isGeneratingEmail}
         >
           {isGeneratingEmail ? 'Generating...' : 'Generate Email'}
         </button>
       </div>
-      <textarea 
-        className="email-content" 
-        value={emailContent} 
+      <textarea
+        className="email-content"
+        value={emailContent}
         onChange={(e) => setEmailContent(e.target.value)}
-        rows="10" 
+        rows="10"
         placeholder="Generated email will appear here..."
       />
 
-      {}
+      { }
     </div>
   );
 };
