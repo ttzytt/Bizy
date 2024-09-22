@@ -126,14 +126,45 @@ const VendorManagement = () => {
     }
   };
 
-  const addInventoryItem = () => {
+  const addInventoryItem = async () => {
     if (!newItem.name || !newItem.quantity || !newItem.unit || !newItem.batchNumber || !newItem.expiryDate || !newItem.vendorId) {
       alert('Please fill in all inventory fields');
       return;
     }
 
-    setInventoryItems([...inventoryItems, { ...newItem, id: Date.now() }]);
-    setNewItem({ name: '', quantity: '', unit: '', batchNumber: '', expiryDate: '', vendorId: '' });
+    const newInventoryItem = {
+      name: newItem.name,
+      quantity: newItem.quantity,
+      unit: newItem.unit,
+      batchNumber: newItem.batchNumber,
+      expiryDate: newItem.expiryDate,
+      vendorId: newItem.vendorId,
+    }
+
+    try {
+      const response = await fetch(cfg.BACKEND_URL + '/inventory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(newInventoryItem),
+      });
+
+      if (response.ok) {
+        const createdItem = await response.json();
+        setInventoryItems((prevItems) => [...prevItems, createdItem]);
+        setNewItem({
+          name: '',
+          quantity: '',
+          unit: '',
+          batchNumber: '',
+          expiryDate: '',
+          vendorId: '',
+        });
+      } else {
+        console.error('Error adding inventory item:', response);
+      }
+    } catch (error) {
+      console.error('Error adding inventory item:', error);
+    }
   };
 
   const checkExpiryAlerts = () => {
