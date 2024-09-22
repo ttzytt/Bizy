@@ -8,7 +8,7 @@ const trafficShares = [
 
 const totalOrders = [
     { id: 1, label: "July", value: [0,0,0,0,0,0], color: "primary" },
-    { id: 2, label: "August", value: [0,0,0,0,0,0], color: "secondary" }
+    { id: 2, label: "August", value: [0, 0, 0, 0, 0, 0], color: "secondary" }
 ];
 
 export {

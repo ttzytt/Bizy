@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faChartArea, faChartBar, faChartLine, faFlagUsa, faFolderOpen, faGlobeEurope, faPaperclip, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faAngular, faBootstrap, faReact, faVuejs } from "@fortawesome/free-brands-svg-icons";
@@ -8,9 +8,39 @@ import { CircleChart, BarChart, SalesValueChart, SalesValueChartphone } from "./
 
 import Profile1 from "../assets/img/team/profile-picture-1.jpg";
 import ProfileCover from "../assets/img/profile-cover.jpg";
+import SimpleMarkdown from './SimpleMarkdown';
 
 import teamMembers from "../data/teamMembers";
+// import ReactMarkdown from "react-markdown";
 
+export const AIResponseWidget = ({response,isLoading}) => {
+  console.log("AIResponse received:", response); // Debug log
+
+  return (
+    <Card border="light" className="shadow-sm">
+      <Card.Body>
+        <h5 className="mb-4">Cash Flow Prediction and Optimization Tool</h5>
+        <div 
+          style={{ 
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '14px',
+            lineHeight: '1.6',
+            backgroundColor: '#f8f9fa',
+            padding: '15px',
+            borderRadius: '5px',
+            border: '1px solid #dee2e6',
+            maxHeight: '55vh',
+            overflowY: 'auto'
+          }}
+        >
+          {isLoading ? "AI is thinking..." :<SimpleMarkdown markdown={response} />}
+        </div>
+      </Card.Body>
+    </Card>
+  );
+};
 
 export const ProfileCardWidget = () => {
   return (
@@ -214,51 +244,7 @@ export const TeamMembersWidget = () => {
   );
 };
 
-export const ProgressTrackWidget = () => {
-  const Progress = (props) => {
-    const { title, percentage, icon, color, last = false } = props;
-    const extraClassName = last ? "" : "mb-2";
-
-    return (
-      <Row className={`align-items-center ${extraClassName}`}>
-        <Col xs="auto">
-          <span className={`icon icon-md text-${color}`}>
-            <FontAwesomeIcon icon={icon} className="me-1" />
-          </span>
-        </Col>
-        <Col>
-          <div className="progress-wrapper">
-            <div className="progress-info">
-              <h6 className="mb-0">{title}</h6>
-              <small className="fw-bold text-dark">
-                <span>{percentage} %</span>
-              </small>
-            </div>
-            <ProgressBar variant={color} now={percentage} min={0} max={100} />
-          </div>
-        </Col>
-      </Row>
-    );
-  };
-
-  return (
-    <Card border="light" className="shadow-sm">
-      <Card.Header className="border-bottom border-light">
-        <h5 className="mb-0">Progress track</h5>
-      </Card.Header>
-      <Card.Body>
-
-        <Progress title="Rocket - SaaS Template" color="purple" icon={faBootstrap} percentage={34} />
-        <Progress title="Pixel - Design System" color="danger" icon={faAngular} percentage={60} />
-        <Progress title="Spaces - Listings Template" color="tertiary" icon={faVuejs} percentage={45} />
-        <Progress title="Stellar - Dashboard" color="info" icon={faReact} percentage={35} />
-        <Progress last title="Volt - Dashboard" color="purple" icon={faBootstrap} percentage={34} />
-      </Card.Body>
-    </Card>
-  );
-};
-
-export const RankingWidget = () => {
+export const RankingWidget = ({ globalRank, rank }) => {
   return (
     <Card border="light" className="shadow-sm">
       <Card.Body>
@@ -268,7 +254,7 @@ export const RankingWidget = () => {
           </div>
           <div>
             <Card.Link href="#" className="text-primary fw-bold">
-              #755 <FontAwesomeIcon icon={faChartLine} className="ms-2" />
+              #{globalRank} <FontAwesomeIcon icon={faChartLine} className="ms-2" />
             </Card.Link>
           </div>
         </div>
@@ -281,20 +267,7 @@ export const RankingWidget = () => {
           </div>
           <div>
             <Card.Link href="#top" className="text-primary fw-bold">
-              #32 <FontAwesomeIcon icon={faChartLine} className="ms-2" />
-            </Card.Link>
-          </div>
-        </div>
-        <div className="d-flex align-items-center justify-content-between pt-3">
-          <div>
-            <h6 className="mb-0"><FontAwesomeIcon icon={faFolderOpen} className="icon icon-xs me-3" />Category Rank</h6>
-            <Card.Link href="#top" className="small card-stats">
-              Travel &gt; Accomodation
-            </Card.Link>
-          </div>
-          <div>
-            <Card.Link href="#top" className="text-primary fw-bold">
-              #16 <FontAwesomeIcon icon={faChartLine} className="ms-2" />
+              #{rank} <FontAwesomeIcon icon={faChartLine} className="ms-2" />
             </Card.Link>
           </div>
         </div>
@@ -302,7 +275,6 @@ export const RankingWidget = () => {
     </Card>
   );
 };
-
 export const SalesValueWidget = (props) => {
   const { title, value, percentage } = props;
   const percentageIcon = percentage < 0 ? faAngleDown : faAngleUp;
@@ -317,16 +289,12 @@ export const SalesValueWidget = (props) => {
           </h5>
           <h3>${value}</h3>
           <small className="fw-bold mt-2">
-            <span className="me-2">Yesterday</span>
+            <span className="me-2">Week</span>
             <FontAwesomeIcon icon={percentageIcon} className={`${percentageColor} me-1`} />
             <span className={percentageColor}>
               {percentage}%
             </span>
           </small>
-        </div>
-        <div className="d-flex ms-auto">
-          <Button variant="secondary" size="sm" className="me-2">Month</Button>
-          <Button variant="primary" size="sm" className="me-3">Week</Button>
         </div>
       </Card.Header>
       <Card.Body className="p-2">
@@ -356,10 +324,6 @@ export const SalesValueWidgetPhone = (props) => {
               {percentage}%
             </span>
           </small>
-        </div>
-        <div className="d-flex ms-auto">
-          <Button variant="secondary" size="sm" className="me-2">Month</Button>
-          <Button variant="primary" size="sm" className="me-3">Week</Button>
         </div>
       </Card.Header>
       <Card.Body className="p-2">

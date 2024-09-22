@@ -20,23 +20,6 @@ export default (props) => {
   }
 
   return (
-    <div>
-      {showSettings ? (
-        <Card.Link className="settings-button" onClick={() => toggleSettings(false)}>
-          <FontAwesomeIcon icon={faCogs} />
-        </Card.Link>
-      ) : null}
-      <footer className="footer section py-5">
-        <Row>
-          <Col xs={12} className="text-center">
-            <p className="mb-0">
-              &copy; {currentYear} <Card.Link as={Link} to={Routes.Presentation.path} className="text-blue text-decoration-none fw-normal">
-                Bizy
-              </Card.Link>
-            </p>
-          </Col>
-        </Row>
-      </footer>
-    </div>
+    <div></div>
   );
 };

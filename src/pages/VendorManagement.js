@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import './VendorManagement.css';
-import * as cfg from "../config";
+import * as cfg from "../config"
 const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0');
 
 const VendorManagement = () => {
@@ -24,7 +24,7 @@ const VendorManagement = () => {
     expiryDate: '',
     vendorId: '',
   });
-  
+
   const [restockQuantity, setRestockQuantity] = useState(''); // New state for restock quantity
 
   const [salesData, setSalesData] = useState([]);
@@ -56,7 +56,7 @@ const VendorManagement = () => {
 
     fetchInventoryItems();
   }, []);
-  
+
   useEffect(() => {
     const simulatedSalesData = [
       { date: '2024-09-01', itemName: 'Tomatoes', quantity: 50 },
@@ -67,22 +67,28 @@ const VendorManagement = () => {
   }, []);
 
   const generateEmail = async (vendorName, itemName, quantity) => {
+    console.log("vendorName: " + vendorName + " itemName: " + itemName + " quantity: " + quantity);
+    if (!vendorName || !itemName || !quantity) {
+      console.error('Missing required data for email generation');
+      return;
+    }
+
     setIsGeneratingEmail(true);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
+      const unit = inventoryItems.find(item => item.name === itemName)?.unit || 'units';
       const prompt = `
-        Write a professional email to a vendor named ${vendorName} requesting a restock of ${quantity} ${itemName}(s). 
-        The email should:
-        - Be polite and formal
-        - Mention the current low stock situation
-        - Request confirmation of the order and estimated delivery time
-        - Thank them for their continued partnership
-      `;
+      Write a professional email to a vendor named ${vendorName} requesting a restock of ${quantity} (in unit of ${unit})${itemName}(s). 
+      The email should:
+      - Be polite and formal
+      - Mention the current low stock situation
+      - Request confirmation of the order and estimated delivery time
+      - Thank them for their continued partnership
+    `;
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
-      const text = response.text();
+      const text = await response.text();
 
       setEmailContent(text);
     } catch (error) {
@@ -92,6 +98,7 @@ const VendorManagement = () => {
       setIsGeneratingEmail(false);
     }
   };
+
 
   const addVendor = async () => {
     if (!vendorName || !vendorEmail || !vendorAddress || !contractLength) {
@@ -112,7 +119,7 @@ const VendorManagement = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newVendor),
       });
-      
+
       if (response.ok) {
         const createdVendor = await response.json();
         setVendors((prevVendors) => [...prevVendors, createdVendor]);
@@ -134,7 +141,22 @@ const VendorManagement = () => {
       alert('Please fill in all inventory fields');
       return;
     }
+    const deleteVendor = async (vendorId) => {
+      console.log("deleteVendor called with vendorId of " + vendorId);
+      try {
+        const response = await fetch(`${cfg.BACKEND_URL}/vendors/${vendorId}`, {
+          method: 'DELETE',
+        });
   
+        if (response.ok) {
+          setVendors((prevVendors) => prevVendors.filter(vendor => vendor._id !== vendorId));
+        } else {
+          console.error('Error deleting vendor:', response);
+        }
+      } catch (error) {
+        console.error('Error deleting vendor:', error);
+      }
+    };
     const newInventoryItem = {
       name: newItem.name,
       quantity: newItem.quantity,
@@ -195,6 +217,21 @@ const VendorManagement = () => {
       setContractTemplate('Failed to generate contract template. Please try again.');
     } finally {
       setIsGeneratingContract(false);
+    }
+  };
+  const deleteInventoryItem = async (itemId) => {
+    try {
+      const response = await fetch(`${cfg.BACKEND_URL}/inventory/${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setInventoryItems((prevItems) => prevItems.filter(item => item._id !== itemId));
+      } else {
+        console.error('Error deleting inventory item:', response);
+      }
+    } catch (error) {
+      console.error('Error deleting inventory item:', error);
     }
   };
 
@@ -277,7 +314,6 @@ const VendorManagement = () => {
             <th>Batch Number</th>
             <th>Expiry Date</th>
             <th>Vendor</th>
-            <th>Forecast</th>
           </tr>
         </thead>
         <tbody>
@@ -288,8 +324,10 @@ const VendorManagement = () => {
               <td>{item.unit}</td>
               <td>{item.batchNumber}</td>
               <td>{item.expiryDate}</td>
-              <td>{vendors.find(v => v.id === parseInt(item.vendorId))?.name || 'N/A'}</td>
-              <td>{forecastInventory(item.name)}</td>
+              <td>{vendors.find(v => v._id === item.vendorId)?.name || 'N/A'}</td>
+              <td>
+                <button onClick={() => deleteInventoryItem(item._id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -314,33 +352,42 @@ const VendorManagement = () => {
       <h2>Generate Restock Request Email</h2>
       <div className="input-group mb-4">
         <select onChange={(e) => {
-          const vendor = vendors.find(v => v.id === parseInt(e.target.value));
-          if (vendor) setVendorName(vendor.name);
+          const selectedVendor = vendors.find(v => v._id === e.target.value);
+          if (selectedVendor) {
+            setVendorName(selectedVendor.name);
+            // Clear the selected item when changing vendor
+            setNewItem({ ...newItem, name: '' });
+          }
         }}>
           <option value="">Select Vendor</option>
           {vendors.map(vendor => (
             <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
           ))}
         </select>
+
         <select onChange={(e) => {
-          const item = inventoryItems.find(i => i.id === parseInt(e.target.value));
-          if (item) {
-            setNewItem({...newItem, name: item.name});
-            setRestockQuantity(item.quantity); // Set to current item quantity
+          const selectedItem = inventoryItems.find(item => item._id === e.target.value);
+          if (selectedItem) {
+            setNewItem({ ...newItem, name: selectedItem.name });
+            setRestockQuantity(selectedItem.quantity);
           }
         }}>
           <option value="">Select Item</option>
-          {inventoryItems.map(item => (
-            <option key={item.id} value={item.id}>{item.name}</option>
-          ))}
+          {inventoryItems
+            .filter(item => item.vendorId === vendors.find(v => v.name === vendorName)?._id) // Filter by selected vendor
+            .map(item => (
+              <option key={item._id} value={item._id}>{item.name}</option>
+            ))}
         </select>
-        <input 
-          type="number" 
-          placeholder="Restock Quantity" 
-          value={restockQuantity} 
+
+        <input
+          type="number"
+          placeholder="Restock Quantity"
+          value={restockQuantity}
           onChange={(e) => setRestockQuantity(e.target.value)}
         />
-        <button 
+
+        <button
           onClick={() => generateEmail(vendorName, newItem.name, restockQuantity)}
           disabled={isGeneratingEmail}
         >
@@ -348,6 +395,8 @@ const VendorManagement = () => {
         </button>
         
       </div>
+
+
       <textarea
         className="email-content"
         value={emailContent}

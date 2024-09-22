@@ -13,10 +13,10 @@ import ThemesbergLogoIcon from "../assets/img/themesberg.svg";
 import PennAppsLogoIcon from "../assets/img/PennApps_Logo.png";
 import ThemesbergLogo from "../assets/img/themesberg-logo.svg";
 import MockupPresentation from "../assets/img/mockup-presentation.png";
-import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
+// import ReactHero from "../assets/img/technologies/react-hero-logo.svg";
 import MapboxImg from "../assets/img/mockup-map-presentation.png";
 import CalendarImg from "../assets/img/mockup-calendar-presentation.png";
-import ReactMockupImg from "../assets/img/react-mockup.png";
+import BizyImg from "../assets/img/bizly.png";
 import BS5IllustrationsImg from "../assets/img/illustrations/bs5-illustrations.svg";
 import BS5Logo from "../assets/img/technologies/bootstrap-5-logo.svg";
 import ReactLogo from "../assets/img/technologies/react-logo.svg";
@@ -84,7 +84,7 @@ export default () => {
       <Navbar variant="dark" expand="lg" bg="dark" className="navbar-transparent navbar-theme-primary sticky-top">
         <Container className="position-relative justify-content-between px-3">
           <Navbar.Brand as={HashLink} to="#home" className="me-lg-3 d-flex align-items-center">
-            <Image src={ReactHero} />
+            <Image src={BizyImg} />
             <span className="ms-2 brand-text d-none d-md-inline">Bizy</span>
           </Navbar.Brand>
 
@@ -176,7 +176,7 @@ export default () => {
               <p className="mb-4">Our app contains cashflow and monetary optimization tools using fine-tuned LLMs, namely Google's Gemini. It also includes highly effective vendor and inventory mangement, including reminders and auto-emailers when stock is low. We also provide legal document generators and fillers to save time on filling out paperwork. In addition to this, we also have an Uber-like feature to quickly find employees if any of yours are unavailible. We also have marketing and collaborating tools, partnering you with nearby non-profits, vendors, and shops to maximize productivity. This is just the surface of all Bizy can do. Bizy will keep our business busy.</p>
             </Col>
             <Col lg={6} className="order-lg-1">
-              <Image src={ReactMockupImg} alt="Calendar Preview" />
+              <Image src={BizyImg} alt="Calendar Preview" />
             </Col>
           </Row>
           <Row className="justify-content-between align-items-center">
