@@ -72,30 +72,59 @@ const VendorManagement = () => {
       console.error('Missing required data for email generation');
       return;
     }
-
+  
     setIsGeneratingEmail(true);
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       const unit = inventoryItems.find(item => item.name === itemName)?.unit || 'units';
       const prompt = `
-      Write a professional email to a vendor named ${vendorName} requesting a restock of ${quantity} (in unit of ${unit})${itemName}(s). 
-      The email should:
-      - Be polite and formal
-      - Mention the current low stock situation
-      - Request confirmation of the order and estimated delivery time
-      - Thank them for their continued partnership
-    `;
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = await response.text();
-
+        Write a professional email to a vendor named ${vendorName} requesting a restock of ${quantity} ${unit} of ${itemName}.
+        The email should:
+        - Be polite and formal
+        - Mention the current low stock situation
+        - Request confirmation of the order and estimated delivery time
+        - Thank them for their continued partnership
+      `;
+  
+      const result = await genAI.generateText({
+        model: 'gemini-pro',
+        prompt: prompt,
+      });
+  
+      const text = result.candidates[0].text;
       setEmailContent(text);
     } catch (error) {
       console.error('Error generating email:', error);
       setEmailContent('Failed to generate email. Please try again.');
     } finally {
       setIsGeneratingEmail(false);
+    }
+  };
+  
+  const generateContractTemplate = async () => {
+    setIsGeneratingContract(true);
+    try {
+      const prompt = `
+        Create a contract template for a vendor named ${vendorName} and a shop owner. 
+        The contract should include:
+        - Vendor details (name, address, email)
+        - Shop owner details
+        - Contract length of ${contractLength} months
+        - Terms and conditions
+        - Signatures
+      `;
+  
+      const result = await genAI.generateText({
+        model: 'gemini-pro',
+        prompt: prompt,
+      });
+  
+      const text = result.candidates[0].text;
+      setContractTemplate(text);
+    } catch (error) {
+      console.error('Error generating contract template:', error);
+      setContractTemplate('Failed to generate contract template. Please try again.');
+    } finally {
+      setIsGeneratingContract(false);
     }
   };
 
@@ -192,33 +221,7 @@ const VendorManagement = () => {
     }
   };
 
-  const generateContractTemplate = async () => {
-    setIsGeneratingContract(true);
-    try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-      const prompt = `
-        Create a contract template for a vendor named ${vendorName} and a shop owner. 
-        The contract should include:
-        - Vendor details (name, address, email)
-        - Shop owner details
-        - Contract length of ${contractLength} months
-        - Terms and conditions
-        - Signatures
-      `;
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-
-      setContractTemplate(text);
-    } catch (error) {
-      console.error('Error generating contract template:', error);
-      setContractTemplate('Failed to generate contract template. Please try again.');
-    } finally {
-      setIsGeneratingContract(false);
-    }
-  };
+  // Removed duplicate generateContractTemplate function
   const deleteInventoryItem = async (itemId) => {
     try {
       const response = await fetch(`${cfg.BACKEND_URL}/inventory/${itemId}`, {
