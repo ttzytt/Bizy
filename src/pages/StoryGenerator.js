@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import './MarketingGenerator.css';
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI('YOUR_API_KEY'); // Replace with your actual API key
+const genAI = new GoogleGenerativeAI('AIzaSyD8ZZKKoaJ8oKOek7caaiISI45W3U2g2a0'); // Replace with your actual API key
 
 const MarketingGenerator = () => {
   const [eventDescription, setEventDescription] = useState('');
