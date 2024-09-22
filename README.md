@@ -11,30 +11,6 @@
   <i align="center">Instantly generate production-ready .NET and Node.js backend apps 🚀</i>
 </p>
 
-<h4 align="center">
-  <a href="https://github.com/amplication/amplication/actions/workflows/ci.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/amplication/amplication/ci.yml?branch=master&label=pipeline&style=flat-square" alt="continuous integration" style="height: 20px;">
-  </a>
-  <a href="https://github.com/amplication/amplication/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors-anon/amplication/amplication?color=yellow&style=flat-square" alt="contributors" style="height: 20px;">
-  </a>
-  <a href="https://opensource.org/licenses/Apache-2.0">
-    <img src="https://img.shields.io/badge/apache%202.0-blue.svg?style=flat-square&label=license" alt="license" style="height: 20px;">
-  </a>
-  <br>
-  <a href="https://amplication.com/discord">
-    <img src="https://img.shields.io/badge/discord-7289da.svg?style=flat-square&logo=discord" alt="discord" style="height: 20px;">
-  </a>
-  <a href="https://twitter.com/amplication">
-    <img src="https://img.shields.io/twitter/follow/amplication?style=social" alt="twitter" style="height: 20px;">
-  </a>
-  <a href="https://www.youtube.com/c/Amplicationcom">
-    <img src="https://img.shields.io/badge/youtube-d95652.svg?style=flat-square&logo=youtube" alt="youtube" style="height: 20px;">
-  </a>
-</h4>
-
-
-
 <p align="center">
     <img src="https://github.com/amplication/amplication/assets/149934977/80ed0d00-2f08-4bd8-92b1-1a347bb30ba6" alt="dashboard"/>
 </p>
@@ -42,13 +18,7 @@
 
 ## Introduction
 
-`Amplication` is a robust, open-source development platform designed to revolutionize the creation of scalable and secure .NET and Node.js applications. Amplication is the only AI platform turning ideas into production-ready code in a few minutes. We automate your backend applications development, ensuring consistency, predictability, and adherence to the highest standards with code that’s built to scale
-
-Our user-friendly interface fosters seamless integration of APIs, data models, databases, authentication, and authorization. Built on a flexible, plugin-based architecture, Amplication allows effortless customization of the code and offers a diverse range of integrations.
-
-With a strong focus on collaboration, Amplication streamlines team-oriented development, making it an ideal choice for groups of all sizes, from startups to large enterprises. Our platform enables you to concentrate on your business logic, while we handle the heavy lifting.
-
-Experience the fastest way to develop .NET and Node.js applications with Amplication.
+`Bizy` Bizy is an all-in-one platform designed to support small businesses in thriving and overcoming common challenges. Utilizing machine learning and real-time data analysis, Bizy provides features such as revenue prediction, financial planning, inventory management, and job posting. It also includes marketing and social media tools, as well as an integrated calendar and event management system that can connect with Google Calendar. Built using a variety of technologies including React.js, Flask, and MongoDB, Bizy aims to help small businesses streamline their operations and increase productivity, ultimately contributing to the vitality of their local communities.
 
 <details open>
 <summary>
