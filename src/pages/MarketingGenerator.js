@@ -24,57 +24,61 @@ const MarketingGenerator = () => {
       alert('Please enter an event description');
       return;
     }
-
+  
     setIsGenerating(true);
+    setGeneratedPost('');
+  
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       
       const prompt = `
         Create an engaging Instagram post for the following event or topic:
         "${eventDescription}"
-
+  
         Consider the following:
         - Tone: ${tone}
         - Target Audience: ${targetAudience}
         - Post Length: ${postLength}
-
+  
         The post should:
         - Start with an attention-grabbing opening line
         - Include relevant emojis throughout the text
         - Use appropriate hashtags (3-5)
         - End with a clear call-to-action
-
+  
         Format the post as it would appear on Instagram, including line breaks.
-
-        Also, suggest 3 potential event dates in the next 3 months with titles. 
-        Present this information in a JSON format like this:
-        {
-          "post": "Your generated Instagram post here",
-          "events": [
-            {"title": "Event Title 1", "date": "YYYY-MM-DD"},
-            {"title": "Event Title 2", "date": "YYYY-MM-DD"},
-            {"title": "Event Title 3", "date": "YYYY-MM-DD"}
-          ]
-        }
+  
+        Also, suggest 3 potential event dates in the next 3 months with titles.
       `;
-
+  
       const result = await model.generateContent(prompt);
       const response = await result.response;
-      const generatedContent = JSON.parse(response.text());
-      
-      setGeneratedPost(generatedContent.post);
-
-      // Add events to calendar (i dont think this works :skull:)
-      const newEvents = generatedContent.events.map(event => ({
-        ...event,
-        extendedProps: { post: generatedContent.post, status: 'pending' }
-      }));
-      setEvents(prevEvents => [...prevEvents, ...newEvents]);
-      
-      const calendarApi = calendarRef.current.getApi();
-      newEvents.forEach(event => calendarApi.addEvent(event));
+      const text = response.text();
+  
+      console.log('API Response:', text); // this code console.logs 'API Response:' as text.
+  
+      setGeneratedPost(text);
+  
+      // parsationnnnnn
+      try {
+        const generatedContent = JSON.parse(text);
+        if (generatedContent.events) {
+          const newEvents = generatedContent.events.map(event => ({
+            ...event,
+            extendedProps: { post: generatedContent.post, status: 'pending' }
+          }));
+          setEvents(prevEvents => [...prevEvents, ...newEvents]);
+          
+          const calendarApi = calendarRef.current.getApi();
+          newEvents.forEach(event => calendarApi.addEvent(event));
+        }
+      } catch (jsonError) {
+        console.log('Response is not in JSON format, using as plain text');
+      }
+  
     } catch (error) {
       console.error('Error generating post:', error);
+      setGeneratedPost('Error generating post. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -113,7 +117,7 @@ const MarketingGenerator = () => {
         <>
           <b>{eventInfo.timeText}</b>
           <i>{eventInfo.event.title}</i>
-          <span style={{marginLeft: '5px', color: 'blue'}}>[ G ]</span>
+          <span className="event-icon google">G</span>
         </>
       );
     }
@@ -122,13 +126,13 @@ const MarketingGenerator = () => {
         <b>{eventInfo.timeText}</b>
         <i>{eventInfo.event.title}</i>
         {eventInfo.event.extendedProps.status === 'pending' && 
-          <span style={{marginLeft: '5px'}}>[ ? ]</span>
+          <span className="event-icon pending">?</span>
         }
         {eventInfo.event.extendedProps.status === 'accepted' && 
-          <span style={{marginLeft: '5px', color: 'green'}}>[ ✓ ]</span>
+          <span className="event-icon accepted">✓</span>
         }
         {eventInfo.event.extendedProps.status === 'declined' && 
-          <span style={{marginLeft: '5px', color: 'red'}}>[ ✗ ]</span>
+          <span className="event-icon declined">✗</span>
         }
       </>
     );
@@ -168,24 +172,28 @@ const MarketingGenerator = () => {
           </select>
         </div>
         
-        <button onClick={generatePost} disabled={isGenerating}>
+        <button onClick={generatePost} disabled={isGenerating} className="generate-btn">
           {isGenerating ? 'Generating...' : 'Generate Post and Events'}
         </button>
       </div>
       
-      {generatedPost && (
-        <div className="output-section">
-          <h2>Generated Post</h2>
-          <div className="post-preview">
-            {generatedPost}
-          </div>
-          <button onClick={copyToClipboard}>Copy to Clipboard</button>
-        </div>
-      )}
+      <div className="output-section">
+        <h2>Generated Post</h2>
+        <textarea
+          value={generatedPost}
+          readOnly
+          rows="10"
+          className="generated-post-textarea"
+          placeholder="Your generated post will appear here..."
+        />
+        {generatedPost && (
+          <button onClick={copyToClipboard} className="copy-btn">Copy to Clipboard</button>
+        )}
+      </div>
 
       <div className="calendar-container">
         <h2>Event Calendar</h2>
-        <label>
+        <label className="google-events-toggle">
           <input
             type="checkbox"
             checked={showGoogleEvents}
