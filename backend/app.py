@@ -17,7 +17,8 @@ vendors_collection = db['vendors']
 inventory_collection = db['inventory']
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:3000"}}, supports_credentials=True)
+
 
 # Set the upload folder
 UPLOAD_FOLDER = 'uploads'   

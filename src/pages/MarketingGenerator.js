@@ -29,6 +29,10 @@ function transformInventoryToEvents(inventoryItems, vendors) {
     return {
       title: eventTitle,
       date: item.expiryDate,
+      extendedProps: {
+        status: item.status || 'default-status', // Add status (if available) or a default value
+        post: `This event is related to ${item.name}.`, // Add other custom fields if necessary
+      }
     };
   });
 }
@@ -104,10 +108,11 @@ const MarketingGenerator = () => {
     if (event.source && event.source.googleCalendarId) {
       alert(`Google Calendar Event: ${event.title}\nDate: ${event.start.toDateString()}`);
     } else {
-      const status = event.extendedProps.status;
-      alert(`Event: ${event.title}\nDate: ${event.start.toDateString()}\nStatus: ${status}\n\nPost:\n${event.extendedProps.post}`);
+      const status = event.extendedProps.status;  // Keep status if you need it
+      alert(`Event: ${event.title}\nDate: ${event.start.toDateString()}\nStatus: ${status}`);
     }
   };
+
 
   const eventContent = (eventInfo) => {
     return (
@@ -217,11 +222,13 @@ const MarketingGenerator = () => {
           ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin, googleCalendarPlugin]}
           initialView="dayGridMonth"
-          events={events}
+          // events={events}
           eventClick={handleEventClick}
           eventContent={eventContent}
           googleCalendarApiKey={apiKey} // Use the API key from the state
           eventSources={[
+
+            {events: events},
             ...(showGoogleEvents ? [{
               googleCalendarId: calendarId,
               color: 'blue',
