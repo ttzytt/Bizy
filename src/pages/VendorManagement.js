@@ -113,8 +113,9 @@ const VendorManagement = () => {
       
       if (response.ok) {
         const createdVendor = await response.json();
+        console.log("setVendors called with response of " + JSON.stringify(createdVendor));
+        console.log("setVendors called with response of " + createdVendor._id);
         setVendors((prevVendors) => [...prevVendors, createdVendor]);
-        console.log("setVendors called with response of " + createdVendor);
         setVendorName('');
         setVendorEmail('');
         setVendorAddress('');
@@ -127,6 +128,25 @@ const VendorManagement = () => {
       console.error('Error adding vendor:', error);
     }
   };
+
+  const deleteVendor = async (vendorId) => {
+    console.log("deleteVendor called with vendorId of " + vendorId);
+    try {
+      const response = await fetch(`${cfg.BACKEND_URL}/vendors/${vendorId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setVendors((prevVendors) => prevVendors.filter(vendor => vendor._id !== vendorId));
+      } else {
+        console.error('Error deleting vendor:', response);
+      }
+    } catch (error) {
+      console.error('Error deleting vendor:', error);
+    }
+  };
+
+
 
   const addInventoryItem = async () => {
     if (!newItem.name || !newItem.quantity || !newItem.unit || !newItem.batchNumber || !newItem.expiryDate || !newItem.vendorId) {
@@ -168,6 +188,23 @@ const VendorManagement = () => {
       console.error('Error adding inventory item:', error);
     }
   };
+
+  const deleteInventoryItem = async (itemId) => {
+    try {
+      const response = await fetch(`${cfg.BACKEND_URL}/inventory/${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setInventoryItems((prevItems) => prevItems.filter(item => item._id !== itemId));
+      } else {
+        console.error('Error deleting inventory item:', response);
+      }
+    } catch (error) {
+      console.error('Error deleting inventory item:', error);
+    }
+  };
+
 
   const checkExpiryAlerts = () => {
     const today = new Date();
@@ -214,11 +251,14 @@ const VendorManagement = () => {
         </thead>
         <tbody>
           {vendors.map((vendor) => (
-            <tr>
+            <tr key={vendor._id}>
               <td>{vendor.name}</td>
               <td>{vendor.email}</td>
               <td>{vendor.address}</td>
               <td>{vendor.contract_length}</td>
+              <td>
+                <button onClick={() => deleteVendor(vendor._id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -234,7 +274,7 @@ const VendorManagement = () => {
         <select value={newItem.vendorId} onChange={(e) => setNewItem({ ...newItem, vendorId: e.target.value })}>
           <option value="">Select Vendor</option>
           {vendors.map(vendor => (
-            <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
+            <option key={vendor._id} value={vendor._id}>{vendor.name}</option>
           ))}
         </select>
         <button onClick={addInventoryItem}>Add Inventory Item</button>
@@ -254,14 +294,17 @@ const VendorManagement = () => {
         </thead>
         <tbody>
           {inventoryItems.map(item => (
-            <tr key={item.id}>
+            <tr key={item._id}>
               <td>{item.name}</td>
               <td>{item.quantity}</td>
               <td>{item.unit}</td>
               <td>{item.batchNumber}</td>
               <td>{item.expiryDate}</td>
-              <td>{vendors.find(v => v.id === parseInt(item.vendorId))?.name || 'N/A'}</td>
+              <td>{vendors.find(v => v._id === parseInt(item.vendorId))?.name || 'N/A'}</td>
               <td>{forecastInventory(item.name)}</td>
+              <td>
+                <button onClick={() => deleteInventoryItem(item._id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -270,7 +313,7 @@ const VendorManagement = () => {
       <h2>Expiry Alerts</h2>
       <ul className="expiry-alerts">
         {checkExpiryAlerts().map(item => (
-          <li key={item.id} className="expiry-alert">
+          <li key={item._id} className="expiry-alert">
             {item.name} (Batch: {item.batchNumber}) expires on {item.expiryDate}
           </li>
         ))}
@@ -278,16 +321,16 @@ const VendorManagement = () => {
       <h2>Generate Restock Request Email</h2>
       <div className="input-group mb-4">
         <select onChange={(e) => {
-          const vendor = vendors.find(v => v.id === parseInt(e.target.value));
+          const vendor = vendors.find(v => v._id === parseInt(e.target.value));
           if (vendor) setVendorName(vendor.name);
         }}>
           <option value="">Select Vendor</option>
           {vendors.map(vendor => (
-            <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
+            <option key={vendor._id} value={vendor._id}>{vendor.name}</option>
           ))}
         </select>
         <select onChange={(e) => {
-          const item = inventoryItems.find(i => i.id === parseInt(e.target.value));
+          const item = inventoryItems.find(i => i._id === parseInt(e.target.value));
           if (item) {
             setNewItem({...newItem, name: item.name});
             setRestockQuantity(item.quantity); // Set to current item quantity
@@ -295,7 +338,7 @@ const VendorManagement = () => {
         }}>
           <option value="">Select Item</option>
           {inventoryItems.map(item => (
-            <option key={item.id} value={item.id}>{item.name}</option>
+            <option key={item._id} value={item._id}>{item.name}</option>
           ))}
         </select>
         <input 

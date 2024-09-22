@@ -6,7 +6,7 @@ import traceback
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-
+from bson.objectid import ObjectId 
 mongo_uri = "mongodb+srv://tzyt:tzyt@cluster0.fcbm3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(mongo_uri, server_api=ServerApi('1'))
 db = client['Bizy']
@@ -63,6 +63,20 @@ def add_inventory_item():
     ret = {'id': str(result.inserted_id), **item_data} 
     return jsonify(ret), 201
 
+@app.route('/inventory/<item_id>', methods=['DELETE'])
+def delete_inventory_item(item_id):     
+    print("deleting item " + item_id)
+    try:
+        result = inventory_collection.delete_one({'_id': ObjectId(item_id)})
+        if result.deleted_count == 1:
+            return jsonify({'message': 'Inventory item deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Item not found'}), 404
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({'error': 'Internal server error'}), 500
+
 @app.route('/vendors', methods=['GET'])
 def get_vendors():
     print("Get vendors function called")
@@ -82,6 +96,20 @@ def add_vendor():
     # return the newly added vendor data and the id of the new vendor
     ret = {'id': str(result.inserted_id), **vendor_data}
     return jsonify(ret), 201
+
+@app.route('/vendors/<vendor_id>', methods=['DELETE'])
+def delete_vendor(vendor_id):
+    print("deleting vendor " + vendor_id)
+    try:
+        result = vendors_collection.delete_one({'_id': ObjectId(vendor_id)})
+        if result.deleted_count == 1:
+            return jsonify({'message': 'Vendor deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Vendor not found'}), 404
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
