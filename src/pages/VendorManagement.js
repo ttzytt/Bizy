@@ -23,6 +23,8 @@ const VendorManagement = () => {
     expiryDate: '',
     vendorId: '',
   });
+  
+  const [restockQuantity, setRestockQuantity] = useState(''); // New state for restock quantity
 
   const [salesData, setSalesData] = useState([]);
 
@@ -119,7 +121,6 @@ const VendorManagement = () => {
     <div className="container py-4">
       <h1>Vendor and Inventory Management</h1>
       
-      {}
       <h2>Vendor Management</h2>
       <div className="input-group mb-4">
         <input type="text" placeholder="Vendor Name" value={vendorName} onChange={(e) => setVendorName(e.target.value)} />
@@ -150,7 +151,6 @@ const VendorManagement = () => {
         </tbody>
       </table>
 
-      {}
       <h2>Inventory Management</h2>
       <div className="input-group mb-4">
         <input type="text" placeholder="Item Name" value={newItem.name} onChange={(e) => setNewItem({...newItem, name: e.target.value})} />
@@ -194,7 +194,6 @@ const VendorManagement = () => {
         </tbody>
       </table>
 
-      {}
       <h2>Expiry Alerts</h2>
       <ul className="expiry-alerts">
         {checkExpiryAlerts().map(item => (
@@ -217,7 +216,8 @@ const VendorManagement = () => {
         <select onChange={(e) => {
           const item = inventoryItems.find(i => i.id === parseInt(e.target.value));
           if (item) {
-            setNewItem({...newItem, name: item.name, quantity: item.quantity});
+            setNewItem({...newItem, name: item.name});
+            setRestockQuantity(item.quantity); // Set to current item quantity
           }
         }}>
           <option value="">Select Item</option>
@@ -228,11 +228,11 @@ const VendorManagement = () => {
         <input 
           type="number" 
           placeholder="Restock Quantity" 
-          value={newItem.quantity} 
-          onChange={(e) => setNewItem({...newItem, quantity: e.target.value})}
+          value={restockQuantity} 
+          onChange={(e) => setRestockQuantity(e.target.value)}
         />
         <button 
-          onClick={() => generateEmail(vendorName, newItem.name, newItem.quantity)}
+          onClick={() => generateEmail(vendorName, newItem.name, restockQuantity)}
           disabled={isGeneratingEmail}
         >
           {isGeneratingEmail ? 'Generating...' : 'Generate Email'}
@@ -245,8 +245,6 @@ const VendorManagement = () => {
         rows="10" 
         placeholder="Generated email will appear here..."
       />
-
-      {}
     </div>
   );
 };
