@@ -44,7 +44,7 @@ export default () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('/upload', {
+      const response = await fetch('http://127.0.0.1:5000/upload', {
         method: 'POST',
         body: formData
       });
@@ -63,7 +63,7 @@ export default () => {
     setIsLoading(true);
     setLoadingData(true);
     try {
-      const response = await fetch('/get-csv-data');
+      const response = await fetch('http://127.0.0.1:5000/get-csv-data');
       
       if (!response.ok) {
         throw new Error('Network response was not ok');

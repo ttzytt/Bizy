@@ -17,7 +17,8 @@ vendors_collection = db['vendors']
 inventory_collection = db['inventory']
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["http://127.0.0.1:3000", "http://localhost:3000"]}}, supports_credentials=True)
+
 
 # Set the upload folder
 UPLOAD_FOLDER = 'uploads'   
@@ -126,3 +127,6 @@ def get_csv_data():
     except Exception as e:
         print(f"Error reading CSV: {str(e)}")
         return jsonify({'error': 'Failed to read CSV'}), 500
+    
+if __name__ == '__main__':
+    app.run(debug=True)
